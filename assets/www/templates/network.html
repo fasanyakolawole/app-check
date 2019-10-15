@@ -1,0 +1,229 @@
+<ion-view view-title="Connections" >
+	<style>
+		.img{
+			
+			position: relative;
+			width: 100%;
+			height: 100%;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			z-index: 2;
+		}
+	</style>
+	<ion-content class="has-tabs-top">
+		<ion-refresher on-refresh="networkRefresh(var3)" pulling-icon="ion-chevron-up" spinner="ripple" ></ion-refresher>
+		<div class="has-input item-input-inset bar bar-header disable-user-behavior">
+			<label class="item-input-wrapper">
+                            <input type="text" placeholder="Search" ng-model="query" ng-change="getSearchValue(query,var3)" >
+                              
+			</label>
+			<button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''">
+				Cancel 
+			</button>  
+		</div> 
+		
+		<div class="row">
+			<div class="col col-33">
+				<button class="text-size-12-xs button button-calm  button-small button-block button-outline" ng-click="ConnectionsNavigation(1, query)" ng-class="{'active': var3 == 1}">
+					<span class="hidden-xs">My</span> Connections 
+				</button>
+			</div>
+			<div class="col col-33">
+				<button class="text-size-12-xs button button-calm  button-small button-block button-outline" ng-click="ConnectionsNavigation(2, query)" ng-class="{'active': var3 == 2}">
+					Members
+				</button>
+			</div>
+			<div class="col col-33" >
+				<button class="text-size-12-xs button button-calm  button-small button-block button-outline" badge ng-click="ConnectionsNavigation(3, query)" ng-class="{'active': var3 == 3}"> 
+					<i class="icon ion-ios-personadd hidden-xs"> &nbsp; </i> Requests <span class="c-badge" ng-if="friend_count > 0">{{friend_count}}</span> 
+				</button>
+			</div>
+		</div>
+		
+		<!--My Connection Tab-->
+		<div class="list list-border-top" ng-if="var3 == 1">
+			<ion-list class="" ng-if="county_name == 'All' && town_id == 'All'">
+				<ion-item class="connection-list" ng-repeat="i in friends | filter: query track by $index">
+					<div class="row no-padding">
+						<div class="col col-15 no-padding">
+							<div class="view-pro-img">
+								<div class="img" style="background-image: url({{img_url}}{{i.friend_img}})" ui-sref="app.friends_profile({friendid:i.id})"></div>
+							</div>
+						</div>
+						<div class="col col-85 no-padding view-pro">
+							<h2><a ui-sref="app.friends_profile({friendid:i.id})">{{i.contact_name}}</a></h2>
+							<p ui-sref="app.friends_profile({friendid:i.id})">{{i.company_name_share}}</p>
+							<small class="text-size-12 text-color-dark text-bold" ng-if="i.city != false">{{i.city}} | {{i.county}} | UK</small>
+						</div>
+					</div>
+					<ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareMembers(i.company_name, i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareMembers(i.company_name, i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-balanced" ng-click="whatsappShareMembers(i.company_name, i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-positive" ng-click="sendSMSMembers(i.company_name, i.id, i.company_name_share)"> <i class="icon ion-ios-email"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-outline button-share" ng-click="linkedinShareMembers(i.company_name, i.id)"> <i class="icon ion-share"></i> </ion-option-button>
+				</ion-item>
+			</ion-list> 
+			
+			<ion-list class="" ng-if="county_name != 'All' && town_id != 'All'">
+				<ion-item class="connection-list" ng-repeat="i in friends | filter: query track by $index">
+					<div class="row no-padding">
+						<div class="col col-15 no-padding">
+							<div class="view-pro-img">
+								<div class="img" style="background-image: url({{img_url}}{{i.friend_img}})" ui-sref="app.friends_profile({friendid:i.id})"></div>
+							</div>
+						</div>
+						<div class="col col-85 no-padding view-pro">
+							<h2><a ui-sref="app.friends_profile({friendid:i.id})">{{i.contact_name}}</a></h2>
+							<p ui-sref="app.friends_profile({friendid:i.id})">{{i.company_name_share}}</p>
+							<small class="text-size-12 text-color-dark text-bold" ng-if="i.city != false"><b>{{i.city}}</b> | {{i.county}} | UK</small>
+						</div>
+					</div>
+					<ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareMembers(i.company_name, i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareMembers(i.company_name, i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-balanced" ng-click="whatsappShareMembers(i.company_name, i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-positive" ng-click="sendSMSMembers(i.company_name, i.id,i.company_name_share )"> <i class="icon ion-ios-email"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-outline button-share" ng-click="linkedinShareMembers(i.company_name, i.id)"> <i class="icon ion-share"></i> </ion-option-button>
+				</ion-item>
+			</ion-list>
+			
+			<div class="padding text-center text-blue" ng-if="(county_name == 'All' && town_id == 'All') && my_friends_count == 0">
+				<p>No Connections Found </p>
+				<p> <i class="icon ion-person-stalker text-size-30"></i> </p>
+			</div>
+			
+			<div class="padding text-center text-blue" ng-if="(county_name != 'All' || town_id != 'All') && search_my_friends_count == 0">
+				<p>No Connections Found for your Search Criteria</p>
+				<p> <i class="icon ion-person-stalker text-size-30"></i> </p>
+			</div>
+			<ion-infinite-scroll ng-if="!noMoreGetFriendsAvailable && friends.length > 0" spinner="ripple" on-infinite="loadMoreGetFriends(county_name, town_id)" distance="5%"></ion-infinite-scroll> 
+			
+		</div>
+		
+		<!--All Members Tab-->
+		<div class="list list-border-top" ng-if="var3 == 2">
+			<ion-list class="" ng-if="county_name == 'All' && town_id == 'All' && business_type == 'All' && business_sector == 'All'">
+				<ion-item class="connection-list" ng-if="all_members.length > 0" ng-repeat="i in all_members | filter: query track by $index">
+					<div class="row no-padding">
+						<div class="col col-15 no-padding">
+							<div class="view-pro-img">
+								<img ng-src="{{img_url}}{{i.friend_img}}"   ui-sref="app.friends_profile({friendid:i.id})">
+							</div>
+						</div> 
+						<div class="col col-50 no-padding view-pro">
+							<h2><a ui-sref="app.friends_profile({friendid:i.id})">{{i.contact_name}}</a></h2>
+							<p ui-sref="app.friends_profile({friendid:i.id})">{{i.company_name_share}}</p>
+							<small class="text-size-12 text-color-dark text-bold" ng-if="i.city != false">{{i.city}} | {{i.county}} | UK</small>
+						</div>
+						<div class="col col-3" ng-if="activation_active==1">
+							<div class="pull-right disconnect-friends member-list-buttons" ng-if="i.me != true">
+								<a class="button button-calm button-small" ng-if="i.f_status == 'Connect'" ng-click="sendFriendRequest(i.id, 'allMembers')"> <i class="icon ion-person-add"></i></a>
+								
+								<a class="button button-calm button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="acceptFriendRequest(i.f_id, 'allMembers')"> <i class="icon ion-checkmark"></i> </a>
+								
+								<a class="button button-assertive button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="rejectFriendRequest(i.f_id, 'allMembers')"> <i class="icon ion-android-close"></i> </a>
+								
+								<a class="button button-req-sent button-small" ng-if="i.f_status == 'Request Sent'" ng-click="cancelFriendRequest(i.id, 'allMembers')"> Pending</a>
+							</div>
+						</div>
+					</div>
+					<ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareMembers(i.company_name, i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareMembers(i.company_name, i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-balanced" ng-click="whatsappShareMembers(i.company_name, i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-positive" ng-click="sendSMSMembers(i.company_name, i.id,i.company_name_share)"> <i class="icon ion-ios-email"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-outline button-share" ng-click="linkedinShareMembers(i.company_name, i.id)"> <i class="icon ion-share"></i> </ion-option-button>
+				</ion-item>
+			</ion-list>
+			
+			<ion-list class="" ng-if="county_name != 'All' || town_id != 'All' || business_type != 'All' || business_sector != 'All'">
+				<ion-item class="connection-list" ng-if="search_all_members.length > 0" ng-repeat="i in search_all_members | filter: query track by $index">
+					<div class="row no-padding">
+						<div class="col col-15 no-padding">
+							<div class="view-pro-img">
+								<img ng-src="{{img_url}}{{i.friend_img}}" ui-sref="app.friends_profile({friendid:i.id})">
+							</div>
+						</div>
+						<div class="col col-50 no-padding view-pro">
+							<h2><a ui-sref="app.friends_profile({friendid:i.id})">{{i.contact_name}}</a></h2>
+							<p ui-sref="app.friends_profile({friendid:i.id})">{{i.company_name_share}}</p>
+							<small ng-if="i.city != false">{{i.city}} | {{i.county}} | UK</small>
+						</div>
+						<div class="col col-3">
+							<div class="pull-right disconnect-friends member-list-buttons" ng-if="i.me != true && activation_active==1"  >
+								<a class="button button-calm button-small" ng-if="i.f_status == 'Connect'" ng-click="sendFriendRequest(i.id, 'allMembers')"> <i class="icon ion-person-add"></i></a>
+								
+								<a class="button button-calm button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="acceptFriendRequest(i.f_id, 'allMembers')"> <i class="icon ion-checkmark"></i> </a>
+								
+								<a class="button button-assertive button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="rejectFriendRequest(i.f_id, 'allMembers')"> <i class="icon ion-android-close"></i> </a>
+								
+								<a class="button button-req-sent button-small" ng-if="i.f_status == 'Request Sent'" ng-click="cancelFriendRequest(i.id, 'allMembers')"> Pending</a>
+							</div>
+						</div>
+					</div>
+					
+					<ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareMembers(i.company_name, i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareMembers(i.company_name, i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-balanced" ng-click="whatsappShareMembers(i.company_name, i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-positive" ng-click="sendSMSMembers(i.company_name, i.id,i.company_name_share)"> <i class="icon ion-ios-email"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-outline button-share" ng-click="linkedinShareMembers(i.company_name, i.id)"> <i class="icon ion-share"></i> </ion-option-button>
+				</ion-item>
+			</ion-list>
+			
+			<div class="padding text-center text-blue" ng-if="(county_name == 'All' && town_id == 'All' && business_type == 'All' && business_sector == 'All') && all_members_count == 0">
+				<p>No Members Found </p>
+				<p> <i class="icon ion-person-stalker text-size-30"></i> </p>
+			</div>
+			
+			<div class="padding text-center text-blue" ng-if="(county_name != 'All' || town_id != 'All' || business_type != 'All' || business_sector != 'All') && search_all_members_count == 0">
+				<p>No Members Found for your Search Criteria</p>
+				<p> <i class="icon ion-person-stalker text-size-30"></i> </p>
+			</div>
+			<ion-infinite-scroll ng-if="!noMoreAllMembersAvailable && all_members.length > 0" spinner="ripple" on-infinite="loadMoreAllMembersTest(county_name, town_id, business_type, business_sector)" distance="10%"></ion-infinite-scroll>
+		</div>
+		
+		<!--Requests Tab-->
+		<div class="list list-border-top" ng-if="var3 == 3">
+			<ion-list class="">
+				<ion-item class="item item-avatar connection-list"  ng-repeat="i in requests"  ng-if="have_request = true">
+					<img ng-src="{{i.img}}" ng-click="navigateToFriendsProfile(i.friend_id); closeConnRequests()">
+					<div class="row">
+						<div class="col-75" ng-click="navigateToFriendsProfile(i.friend_id); closeConnRequests()">
+							<h2>{{i.name}} </h2>
+							<p>
+								{{i.company}}
+							</p>
+						</div>
+						<div class="col-25 text-right text-muted">
+							<button class="button button-calm button-small" ng-click="acceptFriendRequest(i.request_id, 'myRequests'); getFriends()">
+								<i class="icon ion-checkmark"></i>
+							</button>
+							<button class="button button-assertive button-small" ng-click="rejectFriendRequest(i.request_id, 'myRequests')">
+								<i class="icon ion-android-close"></i>
+							</button>
+						</div>
+					</div>
+					<ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareMembers(i.company_trim, i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareMembers(i.company_trim, i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-balanced" ng-click="whatsappShareMembers(i.company_trim, i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-positive" ng-click="sendSMSMembers(i.company_trim, i.id, i.company_name_share)"> <i class="icon ion-ios-email"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-outline button-share" ng-click="linkedinShareMembers(i.company_trim, i.id)"> <i class="icon ion-share"></i> </ion-option-button>
+				</ion-item>
+			</ion-list>
+			
+			<div class="padding text-center text-blue" ng-if="request_count == 0">
+				<p>No Requests Found </p>
+				<p> <i class="icon ion-person-stalker text-size-30"></i> </p>
+			</div>
+                    <ion-infinite-scroll ng-if="req_more" spinner="ripple" on-infinite="loadMoreAllRequests()" distance="10%"></ion-infinite-scroll>
+		
+		</div>
+	</ion-content>
+	
+	<div class="button-fab calm-bg box-shadow" ng-click="openLocationFilter()" ng-if="var3 == 1"> 
+		<i class="icon ion-search"></i>
+	</div>
+	
+	<div class="button-fab calm-bg box-shadow" ng-click="openFilterAllMembers()" ng-if="var3 == 2"> 
+		<i class="icon ion-search"></i>
+	</div> 
+</ion-view>

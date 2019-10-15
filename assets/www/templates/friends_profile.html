@@ -1,0 +1,469 @@
+<ion-view view-title="Profile" >
+    <ion-content class="has-tabs-top " overflow-scroll="true">
+        <ion-refresher on-refresh="viewFriendsProfile()" pulling-icon="ion-chevron-up" spinner="ripple" ></ion-refresher>
+
+        <div class="list card profile-top text-center">
+            <div class="item item-text-wrap">
+                <img ng-src="{{friend.img_url_pro}}{{friend.image}}" class="avatar-profile {{friend.img_url_pro}}{{friend.image}}" ng-click="wallImagePopUp(friend.img_url_pro, friend.image)">
+                <button class="button-clear report-button mb-10" ng-click="openReport(repost_this, 'friends_profile')"> 
+                    <i class="icon ion-ios-information"></i>
+                </button> 
+                <h2 class="font-thin"><b>{{friend.company_name}}</b></h2>
+                <p>{{friend.contact_name}}</p>
+                <p class="text-muted">Business Type:  {{friend.busin_type}} | Sector: {{friend.business_sector}}</p>
+                <div class="padding" ng-if="friend.me != true && activation_active == 1">
+                    <button class="button button-calm button-small profile-h-button" ng-if="friend.f_status == 'Disconnect'" ng-click="openNewMessageProfile(user_id_profile, friend.contact_name)">Message</button>
+                    <button class="button button-calm prl-25 button-small" ng-if="friend.f_status == 'Connect'" ng-click="sendFriendRequest(friend.id, 'friendsProfile')"> <i class="icon ion-person-add"></i> {{friend.f_status}} </button>
+                    <button class="button button-calm button-small" ng-if="friend.f_status == 'Accept/Reject'" ng-click="acceptFriendRequest(friend.f_id, 'friendsProfile')"> <i class="icon ion-person-add"></i> Accept </button>
+                    <button class="button button-assertive button-small" ng-if="friend.f_status == 'Accept/Reject'" ng-click="rejectFriendRequest(friend.f_id, 'friendsProfile')"> <i class="icon ion-person-add"></i> Reject </button>
+                    <button class="button button-req-sent button-small" ng-if="friend.f_status == 'Request Sent'" ng-click="cancelFriendRequest(friend.id, 'friendsProfile')"> <i class="icon ion-person-add"></i> {{friend.f_status}} </button>
+                    <button class="button button-assertive button-small" ng-if="friend.f_status == 'Disconnect'" ng-click="userDisconnect(friend.id, 'friendsProfile')"> <i class="icon ion-person-add"></i> {{friend.f_status}} </button>
+                </div>
+                <p><b>Joined TBC {{friend.tbc_join_date}}</b></p>
+            </div>
+        </div> 
+        <div class="list padding mb-0 pb-0">
+            <div class="item">
+                <i class="icon ion-person-stalker"></i> Connections <span class="text-size-12">({{my_friends.length}})</span>
+                <div class="profile-connections">
+                    <div ng-repeat="i in my_friends| limitTo:8">
+                        <div ui-sref="app.myProfile" ng-if="i.me == true" class="conn-pro-box">
+                            <div class="conn-img-box">
+                                <img src="{{i.img_url}}{{i.image}}">
+                            </div>
+                            <span>{{i.contact_name}}</span>
+                        </div>
+                        <div ui-sref="app.friends_profile({friendid:i.id})" ng-if="i.me != true" class="conn-pro-box">
+                            <div class="conn-img-box">
+                                <img src="{{i.img_url}}{{i.image}}">
+                            </div>
+                            <span>{{i.contact_name}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            <div class="item see-all text-center" ng-if="my_friends.length > 8">
+                <button class="button button-clear button-calm button-small" ui-sref="app.allMyConnections({friendid:friend.id})"><b>See All Connections</b></button>
+            </div>
+        </div>
+        <div class="list padding mb-0" ng-if="friend.user_gallery.length > 0">
+            <div class="item">
+                <i class="icon ion-images"></i> Showcase
+                <div class="clearfix"></div>
+                <div class="showcase-img" ng-repeat="i in friend.user_gallery">
+                    <img ng-src="{{i.file_name}}" class="img-control" ng-click="openShowcase_image(i.file_orgin)">
+                </div>
+            </div>
+        </div>
+        <div class="mb-10"></div>
+        <div class="row padding-rl-10 profile-tab"> 
+            <div class="col-33 padding-right-2"> 
+                <a class="button button-small button-full button-calm button-outline" ng-click="clicked(1)" ng-class="{'active': vars == 1}">Posts</a>
+            </div>
+            <div class="col-33 padding-left-2 padding-right-2">
+                <a class="button button-small button-full button-calm button-outline" ng-click="clicked(2)" ng-class="{'active': vars == 2}">About</a>
+            </div>
+            <div class="col-33 padding-left-2">
+                <a class="button button-small button-full button-calm button-outline" ng-click="clicked(3)" ng-class="{'active': vars == 3}">Current Ads</a>
+            </div>
+        </div>
+        <div class="mb-10"></div>
+        <div class="friends-profile-post" ng-if="vars == 1">
+            <div class="list card" ng-if="frnd_wall_posts.length > 0">
+                <div class="row row-top row-no-padding">
+                    <div class="col">
+                        <h2 class="post-heading">{{friend.contact_name}}'s Posts</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="list card new-feeds wall-post" ng-repeat="i in frnd_wall_posts track by $index" if="frnd_wall_posts.length > 0">
+
+                <div class="row" ng-if="i.shared_status == 'true'">
+                    <div class="col col-15">
+                        <div class="wall-post-img">
+                            <img ng-src="{{image_location_user}}{{i.post_added_by_image}}">
+                        </div>
+                    </div>
+
+                    <div ng-if="wall_show_status == true">
+                        <div class="col col-75 wall-post-name" ng-if="i.shared_user_status == 'shared_post_by_me'">
+                            <p class="mb-0"><b ui-sref="app.myProfile">{{i.post_added_by_name}}</b> shared <a ui-sref="app.friends_profile({friendid:i.shared_old_added_by})">{{i.shared_old_added_by_name}}'s</a> <a ui-sref="app.post({postid:i.wall_post_id})"> post</a></p>
+                            <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                        </div>
+                        <div class="col col-75 wall-post-name" ng-if="i.shared_user_status == 'shared_my_post_by_other'">
+                            <p class="mb-0"><b ui-sref="app.friends_profile({friendid:i.post_added_by})">{{i.post_added_by_name}}</b> shared <a ui-sref="app.myProfile">{{i.shared_old_added_by_name}}'s</a> <a ui-sref="app.post({postid:i.wall_post_id})"> post</a></p>
+                            <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                        </div>
+                        <div class="col col-75 wall-post-name" ng-if="i.shared_user_status == 'shared_my_post_by_me'">
+                            <p class="mb-0"><b ui-sref="app.myProfile">{{i.post_added_by_name}}</b> shared  his <a ui-sref="app.post({postid:i.wall_post_id})"> post</a></p>
+                            <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                        </div>
+                        <div class="col col-75 wall-post-name" ng-if="i.shared_user_status == 'shared_own_post_by_other'">
+                            <p class="mb-0"><b ui-sref="app.friends_profile({friendid:i.post_added_by})">{{i.post_added_by_name}}</b> shared  his <a ui-sref="app.post({postid:i.wall_post_id})"> post</a></p>
+                            <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                        </div>
+                        <div class="col col-75 wall-post-name" ng-if="i.shared_user_status == 'shared_other_post_by_other'">
+                            <p class="mb-0"><b ui-sref="app.friends_profile({friendid:i.post_added_by})">{{i.post_added_by_name}}</b> shared <a ui-sref="app.friends_profile({friendid:i.shared_old_added_by})">{{i.shared_old_added_by_name}}'s</a> <a ui-sref="app.post({postid:i.wall_post_id})"> post</a></p>
+                            <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                        </div>
+                        <div class="col col-10">
+                            <span ng-if="i.post_mine" class="pull-right cursor-on" ng-click="openPopover($event, 'post', i.wall_post_id)"><i class="icon ion-ios-arrow-down"></i> </span>
+                        </div>
+                    </div>
+
+                    <div ng-if="wall_show_status == false">
+                        <div class="col col-75 wall-post-name" ng-if="i.shared_user_status == 'shared_post_by_me'">
+                            <p class="mb-0"><b ui-sref="app.myProfile">{{i.post_added_by_name}}</b> shared <a ui-sref="app.friends_profile({friendid:i.shared_old_added_by})">{{i.shared_old_added_by_name}}'s</a> <a> post</a></p>
+                            <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                        </div>
+                        <div class="col col-75 wall-post-name" ng-if="i.shared_user_status == 'shared_my_post_by_other'">
+                            <p class="mb-0"><b ui-sref="app.friends_profile({friendid:i.post_added_by})">{{i.post_added_by_name}}</b> shared <a ui-sref="app.myProfile">{{i.shared_old_added_by_name}}'s</a> <a> post</a></p>
+                            <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                        </div>
+                        <div class="col col-75 wall-post-name" ng-if="i.shared_user_status == 'shared_my_post_by_me'">
+                            <p class="mb-0"><b ui-sref="app.myProfile">{{i.post_added_by_name}}</b> shared  his <a> post</a></p>
+                            <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                        </div>
+                        <div class="col col-75 wall-post-name" ng-if="i.shared_user_status == 'shared_own_post_by_other'">
+                            <p class="mb-0"><b ui-sref="app.friends_profile({friendid:i.post_added_by})">{{i.post_added_by_name}}</b> shared  his <a> post</a></p>
+                            <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                        </div>
+                        <div class="col col-75 wall-post-name" ng-if="i.shared_user_status == 'shared_other_post_by_other'">
+                            <p class="mb-0"><b ui-sref="app.friends_profile({friendid:i.post_added_by})">{{i.post_added_by_name}}</b> shared <a ui-sref="app.friends_profile({friendid:i.shared_old_added_by})">{{i.shared_old_added_by_name}}'s</a> <a> post</a></p>
+                            <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                        </div>
+                        <div class="col col-10">
+                            <span ng-if="i.post_mine" class="pull-right cursor-on" ng-click="openPopover($event, 'post', i.wall_post_id)"><i class="icon ion-ios-arrow-down"></i> </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" ng-if="i.shared_status != 'true'">
+                    <div class="col col-15">
+                        <div class="wall-post-img">
+                            <img ng-src="{{image_location_user}}{{i.post_added_by_image}}">
+                        </div>
+                    </div>
+                    <div class="col col-75 wall-post-name" ng-if="i.post_mine == true" ui-sref="app.myProfile">
+                        <p class="mb-0"><b>{{i.post_added_by_name}}</b> <span class="" style="color: #777; font-size: 12px;">{{i.post_company_name}}</span></p> 
+                        <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                    </div>
+                    <div class="col col-75 wall-post-name" ng-if="i.post_mine != true" ui-sref="app.friends_profile({friendid:i.post_added_by})">
+                        <p class="mb-0"><b>{{i.post_added_by_name}}</b> <span class="" style="color: #777; font-size: 12px;">{{i.post_company_name}}</span></p>
+                        <p class="wall-post-time mb-0">{{i.post_added_on}}   <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + i.wall_post_id)"></i> </p>
+                    </div>
+                    <div class="col col-10">
+                        <span ng-if="i.post_mine" class="pull-right cursor-on" ng-click="openPopover($event, 'post', i.wall_post_id)"><i class="icon ion-ios-arrow-down"></i> </span>
+                    </div>
+                </div>
+
+                <div ng-if="wall_show_status == true">
+                    <p class="wall-post-text" ng-if="i.shared_status == true" ui-sref="app.post({postid:i.wall_post_id})">{{i.post_post}}</p>
+                    <div class="row" ng-if="i.shared_status != true" ui-sref="app.post({postid:i.wall_post_id})">
+                        <div class="col">
+                            <p class="fp-wp post-txt mb-0"> 
+                                {{i.post_post}}
+                            </p>
+                            <div class="item item-image wall-post-img-top img{{i.image_list.length}}" ng-if="i.image_list.length >= 0" ng-repeat="post_image in i.image_list" ui-sref="app.post({postid:i.wall_post_id})">
+                                <img ng-src="{{post_image.file_name}}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="wall_show_status == false">
+                    <p class="wall-post-text" ng-if="i.shared_status == true" >{{i.post_post}}</p>
+                    <div class="row" ng-if="i.shared_status != true" >
+                        <div class="col">
+                            <p class="post-txt fp-wp mb-0">
+                                {{i.post_post}}
+                            </p>
+                            <div class="item item-image wall-post-img-top img{{i.image_list.length}}" ng-if="i.image_list.length >= 0" ng-repeat="post_image in i.image_list">
+                                <img ng-src="{{post_image.file_name}}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="wall_show_status == true">
+                    <div class="card wall-post" ng-if="i.shared_status == 'true'" ui-sref="app.post({postid:i.wall_post_id})">
+                        <div class="row">
+                            <div class="col col-15">
+                                <div class="wall-post-img">
+                                    <img ng-src="{{image_location_user}}{{i.shared_old_added_by_image}}">
+                                </div>
+                            </div>
+                            <div class="col col-75 wall-post-name" ng-if="i.shared_my_post == true">
+                                <p class="mb-0"><b>{{i.shared_old_added_by_name}}</b> added a <b>post</b></p>  
+                                <div class="wall-post-time mb-0">{{i.shared_old_added_date}}</div>
+                            </div>
+                            <div class="col col-75 wall-post-name" ng-if="i.shared_my_post != true">
+                                <p class="mb-0"><b>{{i.shared_old_added_by_name}}</b> added a <b>post</b></p>  
+                                <div class="wall-post-time mb-0">{{i.shared_old_added_date}}</div>
+                            </div>
+                        </div> 
+                        <div class="row">
+                            <div class="col">
+                                <div class="shared-text">
+                                    {{i.shared_old_post}}
+                                </div>
+                                <div class="item item-image wall-post-img-top img{{i.shared_old_images.length}}" ng-if="i.shared_old_images.length >= 0" ng-repeat="shared_post_image in i.shared_old_images" ui-sref="app.post({postid:i.wall_post_id})">
+                                    <img ng-src="{{shared_post_image.file_name}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="wall_show_status == false">
+                    <div class="card wall-post" ng-if="i.shared_status == 'true'" >
+                        <div class="row">
+                            <div class="col col-15">
+                                <div class="wall-post-img">
+                                    <img ng-src="{{image_location_user}}{{i.shared_old_added_by_image}}">
+                                </div>
+                            </div>
+                            <div class="col col-75 wall-post-name" ng-if="i.shared_my_post == true">
+                                <p class="mb-0"><b>{{i.shared_old_added_by_name}}</b> added a <b>post</b></p>  
+                                <div class="wall-post-time mb-0">{{i.shared_old_added_date}}</div>
+                            </div>
+                            <div class="col col-75 wall-post-name" ng-if="i.shared_my_post != true">
+                                <p class="mb-0"><b>{{i.shared_old_added_by_name}}</b> added a <b>post</b></p>  
+                                <div class="wall-post-time mb-0">{{i.shared_old_added_date}}</div>
+                            </div>
+                        </div> 
+                        <div class="row">
+                            <div class="col">
+                                <div class="shared-text">
+                                    {{i.shared_old_post}} 
+                                </div>
+                                <div class="item item-image wall-post-img-top img{{i.shared_old_images.length}}" ng-if="i.shared_old_images.length >= 0" ng-repeat="shared_post_image in i.shared_old_images" >
+                                    <img ng-src="{{shared_post_image.file_name}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="padding"  ng-if="i.num_like > 0 || i.no_of_reply > 0">
+                    <div class="post-line"></div>
+                </div>
+                <div class="row no-padding" ng-if="i.num_like > 0 || i.no_of_reply > 0">
+                    <div class="col no-padding">
+                        <div style="padding: 0 10px 3px;"> 
+                            <div ng-if="wall_show_status == true">
+                                <p class="mb-0">
+                                    <a ng-if="i.num_like > 0"  ui-sref="app.post({postid:i.wall_post_id})" class="subdued">{{i.num_like}} {{i.like}} ·  </a>
+                                    <a ui-sref="app.post({postid:i.wall_post_id})" class="subdued" ng-if="i.no_of_reply > 0">{{i.no_of_reply}} {{i.comment}}</a>
+                                </p>
+                            </div>
+                            
+                            <div ng-if="wall_show_status == false">
+                                <p class="mb-0">
+                                    <a ng-if="i.num_like > 0"   class="subdued">{{i.num_like}} {{i.like}} ·  </a>
+                                    <a class="subdued" ng-if="i.no_of_reply > 0">{{i.no_of_reply}} {{i.comment}}</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="item tabs tabs-secondary tabs-icon-left mt-10" ng-if="friend.f_status == 'Disconnect'">
+
+                    <a class="tab-item {{i.like_status}}" ng-class="{{i.like_status}}" ng-click="likeWallPost(i.wall_post_id, i.like_status, 'home', i.like_test, i)" ng-init="like_display = i.like_test_1">
+                        <i class="icon ion-thumbsup"></i> 
+                        Like
+                    </a>
+                    <span class="text-gray">|</span>
+                    <a class="tab-item"  ng-click="openPostApp('comment', i.wall_post_id, i)">
+                        <i class="icon ion-chatbox"></i>
+                        Comment
+                    </a>
+                    <span class="text-gray">|</span>
+                    <div ng-if="i.shared_status == 'true'">
+                        <a class="tab-item"  ng-click="openSharePost(i.shared_old_post_id)">
+                            <i class="icon ion-android-share"></i>
+                            Share
+                        </a>
+                    </div>
+                    <div ng-if="i.shared_status != 'true'">
+                        <a class="tab-item"  ng-click="openSharePost(i.wall_post_id)">
+                            <i class="icon ion-android-share"></i>
+                            Share
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="padding text-center text-blue" ng-if="frnd_wall_posts.length == 0">
+                <p>No posts available </p>
+                <p> <i class="icon ion-grid text-size-30"></i> </p>
+            </div>
+            <ion-infinite-scroll ng-if="!noMoreFriendsWallItemsAvailable && tmp_wall_post_frnd != 0"  spinner="ripple"  on-infinite="loadMoreFriendsProfileHomeWall(friend.id)" distance="2%"></ion-infinite-scroll>
+        </div>
+        <div class="about-tab" ng-if="vars == 2" >
+            <div ng-if="friend.about_busin" class="card list mb-0">
+                <div class="item item-text-wrap">
+                    <h3>About</h3>
+                    <div class="friends-profile-about">
+                        {{friend.about_busin}}
+                    </div>
+                </div>
+            </div>
+            <div ng-if="friend.user_address1 || friend.user_address2 || friend.town_city || friend.country || friend.postcode" class="card list mb-0" ng-if="friend.town_city != false">
+                <div class="item item-text-wrap address">
+                    <h3>Address</h3>
+                    <p ng-if="friend.user_address1 != ''">{{friend.user_address1}},</p>
+                    <p ng-if="friend.user_address2 != ''">{{friend.user_address2}},</p>
+                    <p ng-if="friend.town_city != ''">{{friend.town_city}}</p>
+                    <p ng-if="friend.country != ''">{{friend.country}} </p>
+                    <p ng-if="friend.postcode != ''">{{friend.postcode}} </p>
+                </div>
+            </div>
+            <div ng-if="friend.user_tel || friend.user_mobile || friend.user_email" class="card list mb-0">
+                <div class="item item-text-wrap contact-info">
+                    <h3>Contact Information</h3>
+
+                    <div class="row pl-0" ng-if="friend.user_tel">
+                        <div class="col col-10 in-icon pl-0"><i class="icon ion-ios-telephone"></i></div>
+                        <div class="col col-90"><a ng-click="callFriend('{{friend.user_tel}}')">{{friend.user_tel}}</a></div>
+                    </div>
+                    <div class="row pl-0" ng-if="friend.user_mobile">
+                        <div class="col col-10 in-icon pl-0"><i class="icon ion-ipad"></i></div>
+                        <div class="col col-90"><a ng-click="callFriend('{{friend.user_mobile}}')">{{friend.user_mobile}}</a></div>
+                    </div>
+                    <div class="row pl-0" ng-if="friend.user_email">
+                        <div class="col col-10 in-icon pl-0"><i class="icon ion-ios-email-outline"></i></div>
+                        <div class="col col-90">{{friend.user_email}}</div>
+                    </div>
+                </div>
+            </div> 
+<!--            <div ng-if="friend.user_fb || friend.user_tw || friend.user_lin || friend.user_in" class="item item-divider"> Keep in touch </div>-->
+            <div ng-if="friend.user_fb || friend.user_tw || friend.user_lin || friend.user_in" class="card list mb-0" >
+                <div class="item item-text-wrap about-social-link">
+                    <h3>Social Media</h3>
+                    <div class="row pl-0" ng-if="friend.user_fb">
+                        <div class="col col-10 in-icon pl-0"><i class="icon ion-social-facebook"></i></div>
+                        <div class="col col-90"><a ng-click="openSocialMediaLinks('{{friend.user_fb}}')">{{friend.user_fb}}</a></div>
+                    </div>
+                    <div class="row pl-0" ng-if="friend.user_tw">
+                        <div class="col col-10 in-icon pl-0"><i class="icon ion-social-twitter"></i></div>
+                        <div class="col col-90"><a ng-click="openSocialMediaLinks('{{friend.user_tw}}')">{{friend.user_tw}}</a></div>
+                    </div>
+                    <div class="row pl-0" ng-if="friend.user_lin">
+                        <div class="col col-10 in-icon pl-0"><i class="icon ion-social-linkedin"></i></div>
+                        <div class="col col-90"><a ng-click="openSocialMediaLinks('{{friend.user_lin}}')">{{friend.user_lin}}</a></div>
+                    </div>
+                    <div class="row pl-0" ng-if="friend.user_in">
+                        <div class="col col-10 in-icon pl-0"><i class="icon ion-social-instagram"></i></div>
+                        <div class="col col-90"><a ng-click="openSocialMediaLinks('{{friend.user_in}}')">{{friend.user_in}}</a></div>
+                    </div>
+                    
+                </div>
+            </div> 
+            <div>
+                <div class="card" ng-if="mapStatus">
+<!--                    <div  class="item item-divider"> Map </div>-->
+                    <div class="item item-text-wrap">
+                         <h3>Map</h3>
+                    </div>
+                    <div  class="list mb-"> 
+                        <div class="friends-profile-google-maps" >
+                            <img  ng-src="https://maps.googleapis.com/maps/api/staticmap?center={{friend.postcode}}&size=400x400&maptype=roadmap &markers=color:red%7Clabel:S%7C {{lat}},{{lng}}&key=AIzaSyAgMo2K5TixWCkDGBvZXFCYw8SCCyRN9qQ&zoom=16" />
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            <div class="card mb-10">
+                <div class="item statistic-box">
+                    <div class="row">
+                        <div class="col col-25">
+                            <div class="number-box">
+                                <i class="fa fa-random"></i> {{friend.num_of_request}}
+                            </div>
+                        </div>
+                        <div class="col col-75">
+                            <p><b>Requests</b></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-25">
+                            <div class="number-box">
+                                <i class="fa fa-bullhorn"></i> {{friend.num_of_ads}}
+                            </div>
+                        </div>
+                        <div class="col col-75">
+                            <p><b>Ads</b></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-25">
+                            <div class="number-box">
+                                <i class="fa fa-connectdevelop"></i> {{friend.num_of_connections}}
+                            </div>
+                        </div>
+                        <div class="col col-75">
+                            <p><b>Connections</b></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-25">
+                            <div class="number-box">
+                                <i class="fa fa-thumbs-up"></i> {{friend.num_of_like}}
+                            </div>
+                        </div>
+                        <div class="col col-75">
+                            <p><b>Likes</b></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-25">
+                            <div class="number-box">
+                                <i class="fa fa-clipboard"></i> {{friend.num_of_post}}
+                            </div>
+                        </div>
+                        <div class="col col-75">
+                            <p><b>Posts</b></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="list list-border-top  mt-10" ng-if="vars == 3">
+            <ion-list ng-repeat="i in productss">
+                <ion-item class="ads-desc item item-thumbnail-left border-radius-0"  ui-sref="app.myadsingle({id:i.id})">
+                    <img ng-src="{{i.images[0].file_name}}">
+                    <div class="row no-padding">
+                        <div class="col col-80 no-padding"> 
+                            <h2><b>{{i.product_name}}</b></h2>
+                            <p>{{i.product_small_desc}}</p>
+                            <div class="row row-no-padding">
+                                <div class="col col-50 text-green" ng-if="i.price != '£0.00'">
+                                    Now   {{i.price}}
+                                </div>
+                                <div class="col col-50 text-right" ng-if="i.basic_price != '£0.00'">
+                                    <span class="reg-price"> {{i.basic_price}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="i.discount_prices != 0" class="col col-20 no-padding">
+                            <div class="offer-box"> 
+                                <span class="offer-text"> {{i.discount_prices}}%  <br> OFF</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ion-option-button class="drag-button button-outline button-facebook" ng-click="tbcSocialShareAds('facebook', i.id, i.product_name)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-outline button-twitter" ng-click="tbcSocialShareAds('twitter', i.id, i.product_name)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-calm" ng-click="tbcSocialShareAds('whatsapp', i.id, i.product_name)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-positive" ng-click="tbcSocialShareAds('sms', i.id, i.product_name)"> <i class="icon ion-ios-email"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-outline button-share" ng-click="tbcSocialShareAds('others', i.id, i.product_name)"> <i class="icon ion-share"></i> </ion-option-button>
+
+                </ion-item>
+            </ion-list>
+            <div class="padding text-center text-blue" ng-show="!productss.length">
+                <p>No member ads</p>
+<!--                <p> <i class="icon ion-ios-cart-outline text-size-30"></i> </p> -->
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

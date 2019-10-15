@@ -1,0 +1,205 @@
+<ion-view view-title="Marketplace">
+    <ion-nav-buttons side="left" >
+        <button ng-if='loginStatus' class="button button-icon ion-ios-settings" ui-sref="app.manageAds"></button>
+    </ion-nav-buttons>
+    <ion-content ng-class="loginStatus == true ? 'has-tabs-top' : ''" overflow-scroll="true">
+        <style>
+            .img{
+
+                position: relative;
+                width: 100%;
+                height: 100%;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                z-index: 2;
+            }
+        </style>
+        <ion-refresher on-refresh="adsRefresh(var2)" pulling-icon="ion-chevron-up" spinner="ripple"></ion-refresher>
+        <div class="has-input item-input-inset bar bar-header disable-user-behavior">
+            <label class="item-input-wrapper">
+                <input type="text" placeholder="Search" ng-model="sname" ng-change="getAdSearch(sname,var2)">
+            </label>
+            <button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''">
+                Cancel
+            </button>  
+        </div> 
+        <!-- {{var2}} -->
+        <div class="list mb-0" ng-if="loginStatus === true">
+            <div class="row">
+                <div class="col col-33" >
+                    <button class="button button-full button-calm button-outline button-small" ng-click="AdsNavigation(1)" ng-class="{'active': var2 == 1}">My Live Ads</button>
+                </div>
+                <div class="col col-33" > 
+                    <button class="button button-full button-calm button-outline button-small" ng-click="AdsNavigation(2)"ng-class="{'active': var2 == 2}">Expired Ads</button>
+                </div>
+                <div class="col col-33">
+                    <a class="button button-full button-calm button-outline button-small" ng-click="AdsNavigation(3)" ng-click="goToAllAds()" ng-class="{'active': var2 == 3}">All Ads</a>
+                </div>
+            </div>
+        </div>
+
+        <!--Live Ads Tab-->
+        <div class="list list-border-top" ng-if="var2 == 1">
+            <ion-list>
+                <ion-item class="ads-desc item item-thumbnail-left border-radius-0" ng-repeat="i in my_deals| filter:sname track by $index" on-hold="showAdAction(i.id)">
+                    <img ng-src="{{i.images[0].file_name}}"  ui-sref="app.myadsingle({id:i.id})">
+                    <div class="row no-padding"  ui-sref="app.myadsingle({id:i.id})" >
+                        <div class="col col-80 no-padding"> 
+                            <h2><b>{{i.product_name}}</b></h2>
+                            <p>{{i.product_small_desc}}</p>
+                            <div class="row row-no-padding font-size-13-xs">
+                                <div class="col col-50 text-green" ng-if="i.new_price != 0.00">
+                                    Now  £ {{i.new_price| number : 2}}
+                                </div>
+                                <div class="col col-50 text-right" ng-if="i.discount_price > 0">
+                                    <span class="reg-price" ng-if="i.basic_price != null">£ {{i.basic_price}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-20 no-padding" ng-if="i.discount_percentage > 0">
+                            <div class="offer-box"> 
+                                <span class="offer-text"> {{i.discount_percentage}}%  <br> OFF</span>
+                            </div>
+                        </div>
+                    </div>
+                    <ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareAds(i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareAds(i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-balanced" ng-click="whatsappShareAds(i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-positive" ng-click="sendSMSAds(i.id)"> <i class="icon ion-ios-email"></i> </ion-option-button>    
+                    <ion-option-button class="drag-button button-outline button-share" ng-click="moreShocialShare(i.id, i.product_name, i.product_small_desc, i.images[0].file_name, null)"> <i class="icon ion-share"></i> </ion-option-button>
+                </ion-item>
+            </ion-list>
+            <div class="row">
+                <div class="col">
+                    <div class="text-center text-blue" ng-if="my_deals.length == 0">
+                        <p>There is no live Ad</p>
+                         
+                    </div>
+                </div>
+            </div>
+            
+              <ion-infinite-scroll ng-if="mypro_more" spinner="ripple" on-infinite="getMyProductMore()" distance="10%"></ion-infinite-scroll> 
+
+        </div>
+
+        <!--Expired Ads Tab-->
+        <div class="list list-border-top" ng-if="var2 == 2">
+            <ion-list>
+                <ion-item ng-repeat="i in expired_deals| filter:sname track by $index" class="ads-desc item item-thumbnail-left border-radius-0" ui-sref="app.myadsingle({id:i.id})"  on-hold="showAdAction(i.id)">
+                    <img ng-src="{{i.image_location}}{{i.images[0].file_name}}">     
+                    <div class="row no-padding">
+                        <div class="col col-80 no-padding no-fnt-wgt"> 
+                            <h2><b>{{i.product_name}}</b></h2>
+                            <p>{{i.product_small_desc}}</p>
+                            <div class="row row-no-padding font-size-13-xs">
+                                <div class="col col-50 text-green" ng-if="i.new_price != 0.00">
+                                    Now £ {{i.discounted_price| number : 2}}
+                                </div>
+                                <div class="col col-50 text-right" ng-if="i.discounted_price > 0">
+                                    <span class="reg-price">£ {{i.normal_price}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-20 no-padding" ng-if="i.discount_percentage > 0">
+                            <div class="offer-box"> 
+                                <span class="offer-text"> {{i.discount_percentage}}%  <br> OFF</span>
+                            </div>
+                        </div>
+                    </div>  
+                </ion-item>
+            </ion-list>
+            <div class="row">
+                <div class="col">
+                    <div class="text-center text-blue" ng-if="expired_deals.length==0" >
+                        <p> There is no Expired Ad</p>
+                         
+                    </div>
+                </div>
+            </div>
+            
+            <ion-infinite-scroll ng-if="myexMore" spinner="ripple" on-infinite="getMyExpiredProductsMore()" distance="10%"></ion-infinite-scroll> 
+        </div>
+
+        <!--All Ads Tab-->
+        <div class="list list-border-top" ng-if="var2 == 3">
+            <div class="list list-border-top" ng-if="county == 'All' && town_id == 'All' && cat_id == 'All' && sub_cat_id == 'All'">
+                <ion-list>
+                    <ion-item class="ads-desc item item-thumbnail-left border-radius-0" ng-repeat="i in products| filter:sname track by $index" ui-sref="app.myadsingle({id:i.id})" >
+                        <img ng-src="{{i.image_location}}{{i.images[0].file_name}}">
+                        <div class="row no-padding">
+                            <div class="col col-80 no-padding no-fnt-wgt"> 
+                                <h2><b>{{i.product_name}}</b></h2>
+                                <p>{{i.product_small_desc}}</p>
+                                <div class="row row-no-padding font-size-13-xs">
+                                    <div class="col col-50 text-green" ng-if="i.new_price != 0.00">
+                                        Now  £ {{i.new_price| number : 2}} 
+                                    </div>
+                                    <div class="col col-50 text-right" ng-if="i.discount_price > 0">
+                                        <span class="reg-price" ng-if="i.basic_price != null">£ {{i.basic_price}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col col-20 no-padding" ng-if="i.discount_price > 0">
+                                <div class="offer-box"> 
+                                    <span class="offer-text"> {{i.discount_price}}%  <br> OFF</span>
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareAds(i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareAds(i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-balanced" ng-click="whatsappShareAds(i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-positive" ng-click="sendSMSAds(i.id)"> <i class="icon ion-ios-email"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-outline button-share" ng-click="moreShocialShareExpire(i.id, i.product_name, i.product_small_desc, i.image_location, i.images[0].file_name)"> <i class="icon ion-share"></i> </ion-option-button>    
+                   
+                    </ion-item>
+                </ion-list>
+            </div>
+            <div class="list list-border-top" ng-if="county != 'All' || town_id != 'All' || cat_id != 'All' || sub_cat_id != 'All'">
+                <ion-list>
+                    <ion-item class="ads-desc item item-thumbnail-left border-radius-0" ng-repeat="i in search_products| filter:sname track by $index" ui-sref="app.myadsingle({id:i.id})" >
+                        <img ng-src="{{i.image_location}}{{i.images[0].file_name}}">
+                        <div class="row no-padding">
+                            <div class="col col-80 no-padding no-fnt-wgt"> 
+                                <h2><b>{{i.product_name}}</b></h2>
+                                <p>{{i.product_small_desc}}</p>
+                                <div class="" ng-if="i.discount_price > 0">
+                                    <small ng-if="i.basic_price != null">£ {{i.basic_price}}</small>
+                                </div>
+                                <div ng-if="i.new_price != 0.00" class="text-green text-bold pull-left">Now  £ {{i.new_price}} </div>
+                            </div>
+                            <div class="col col-20 no-padding" ng-if="i.discount_price > 0">
+                                <div class="offer-box"> 
+                                    <span class="offer-text"> {{i.discount_price}}%  <br> OFF</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareAds(i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareAds(i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-balanced" ng-click="whatsappShareAds(i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-positive" ng-click="sendSMSAds(i.id)"> <i class="icon ion-ios-email"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-outline button-share" ng-click="moreShocialShareExpire(i.id, i.product_name, i.product_small_desc, i.image_location, i.images[0].file_name)"> <i class="icon ion-share"></i> </ion-option-button>    
+                    </ion-item>
+                </ion-list>
+            </div>
+            <div class="padding text-center text-blue" ng-if="county == 'All' && town_id == 'All' && cat_id == 'All' && sub_cat_id == 'All' && products_count == 0 && products.length == 0">
+                <p>No Ads Found </p>
+                
+            </div>
+
+            <div class="padding text-center text-blue" ng-if="(county != 'All' || town_id != 'All' || cat_id != 'All' || sub_cat_id != 'All') && search_products_count == 0">
+                <p>No Ads Found for your Search Criteria</p>
+                
+            </div>
+            <ion-infinite-scroll ng-if="!productsMore && products.length > 0" spinner="ripple" on-infinite="loadMoreSearchProducts(county, town_id, cat_id, sub_cat_id)" distance="10%"></ion-infinite-scroll> 
+        </div>
+    </ion-content>
+    <div class="button-fab calm-bg box-shadow" ng-click="openNewAd()" ng-if="var2 == 1 || var2 == 2"> 
+        <i class="icon ion-plus"></i>
+    </div>
+
+    <div class="button-fab calm-bg box-shadow" ng-click="openFilter()" ng-if="var2 == 3"> 
+        <i class="icon ion-search"></i>
+    </div> 
+</ion-view>

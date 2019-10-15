@@ -1,0 +1,261 @@
+<ion-view>
+    <ion-nav-title ng-click="scrollTop()" >
+        <span class="logo-text-"><img src="img/body/tbc-logo-wt.png" class="img-logo"></span>
+    </ion-nav-title>
+    <div class="bar bar-subheader box-shadow new-wallpost-box" ng-if="activation_active==1">
+        <div class="row pl-0">
+            <div class="col col-10" ui-sref="app.myProfile">
+                <div class="home-user-pro-pic">
+
+                    <img  ng-src="{{userImagewithUrl}}" alt="profile pic">
+                </div>
+            </div>
+            <div class="col col-80" ng-click="openPostApp('post')">
+                <div class="post-area">
+                    Share an article, photo or idea 
+                </div>     
+            </div>              
+            <div class="col col-10" ng-click="openPostApp('post')">
+                <i class="icon ion-ios-compose text-size-30 pull-right"></i> 
+            </div>             
+        </div>
+    </div>
+    <ion-content class="home bg has-tabs-top" overflow-scroll="true" scroll-to-top="150" delegate-handle="scroller" >
+        <ion-refresher on-refresh="doRefresh()" pulling-icon="ion-chevron-up" spinner="ripple"></ion-refresher>
+        <div  class="text-center home-status">
+            <img ng-if="activation_active==1" src="img/body/tbc-logo-tran-bl.png" style="max-height: 35px;">
+        </div>
+<!--        <video controls="controls" preload="metadata" autoplay="autoplay" webkit-playsinline="webkit-playsinline" class="videoPlayer">
+                    <source src="https://player.vimeo.com/external/85569724.sd.mp4?s=43df5df0d733011263687d20a47557e4" type="video/mp4"/>
+                </video>-->
+        <div ng-if="main_wall.length > 0" class="list card new-feeds wall-post"  ng-repeat="x in main_wall track by $index" ng-if="main_wall[$index].wall_post_id != 'null' && activation_active != 2" ng-init="checkForExternalLinks(main_wall[$index].post_post, main_wall[$index].wall_post_id)">
+            <div class="row" ng-if="main_wall[$index].shared_status == 'true'">
+                <div class="col col-15">
+                    <div class="wall-post-img sdfsdfsdfsdfsdfsdfsdfsdf">
+                        <img ng-src="{{image_location_user}}{{main_wall[$index].post_added_by_image}}" >
+                    </div>
+                </div>
+
+                <!--shared post by system user-->
+                <div class="col col-75 wall-post-name" ng-if="main_wall[$index].shared_user_status == 'shared_post_by_me'">
+                    <p class="mb-0"><b ui-sref="app.myProfile">{{main_wall[$index].post_added_by_name}}</b> shared <a ui-sref="app.friends_profile({friendid:main_wall[$index].shared_old_added_by})">{{main_wall[$index].shared_old_added_by_name}}'s</a> <a ui-sref="app.post({postid:main_wall[$index].wall_post_id})"> post</a></p>
+                    <small class="wall-post-time mb-0">{{main_wall[$index].post_added_on}}  <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + main_wall[$index].wall_post_id)"></i></small>
+                </div>
+
+                <!--shared system user's post by other user-->
+                <div class="col col-75 wall-post-name" ng-if="main_wall[$index].shared_user_status == 'shared_my_post_by_other'">
+                    <p class="mb-0"><b ui-sref="app.friends_profile({friendid:main_wall[$index].post_added_by})">{{main_wall[$index].post_added_by_name}}</b> shared <a ui-sref="app.myProfile">{{main_wall[$index].shared_old_added_by_name}}'s</a> <a ui-sref="app.post({postid:main_wall[$index].wall_post_id})"> post</a></p>
+                    <small class="wall-post-time mb-0">{{main_wall[$index].post_added_on}}  <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + main_wall[$index].wall_post_id)"></i></small>
+                </div>
+
+                <!--shared system user's post by system user-->
+                <div class="col col-75 wall-post-name" ng-if="main_wall[$index].shared_user_status == 'shared_my_post_by_me'">
+                    <p class="mb-0"><b ui-sref="app.myProfile">{{main_wall[$index].post_added_by_name}}</b> shared  his <a ui-sref="app.post({postid:main_wall[$index].wall_post_id})"> post</a></p>
+                    <small class="wall-post-time mb-0">{{main_wall[$index].post_added_on}}  <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + main_wall[$index].wall_post_id)"></i></small>
+                </div>
+
+                <!--shared other user's own post by other user-->
+                <div class="col col-75 wall-post-name" ng-if="main_wall[$index].shared_user_status == 'shared_own_post_by_other'">
+                    <p class="mb-0"><b ui-sref="app.friends_profile({friendid:main_wall[$index].post_added_by})">{{main_wall[$index].post_added_by_name}}</b> shared  his <a ui-sref="app.post({postid:main_wall[$index].wall_post_id})"> post</a></p>
+                    <small class="wall-post-time mb-0">{{main_wall[$index].post_added_on}}  <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + main_wall[$index].wall_post_id)"></i></small>
+                </div>
+
+                <!--shared other user's post by other user-->
+                <div class="col col-75 wall-post-name" ng-if="main_wall[$index].shared_user_status == 'shared_other_post_by_other'">
+                    <p class="mb-0"><b ui-sref="app.friends_profile({friendid:main_wall[$index].post_added_by})">{{main_wall[$index].post_added_by_name}}</b> shared <a ui-sref="app.friends_profile({friendid:main_wall[$index].shared_old_added_by})">{{main_wall[$index].shared_old_added_by_name}}'s</a> <a ui-sref="app.post({postid:main_wall[$index].wall_post_id})"> post</a></p>
+                    <small class="wall-post-time mb-0">{{main_wall[$index].post_added_on}}  <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + main_wall[$index].wall_post_id)"></i></small>
+                </div>
+
+                <div class="col col-10">
+                    <span ng-if="main_wall[$index].post_mine" class="pull-right cursor-on" ng-click="wallPostEditOption('edit-post-home', x.wall_post_id, $index)"><i class="icon ion-ios-arrow-down text-size-30"></i> </span>
+                </div>
+            </div>
+
+            <!--individual post-->
+            <div class="row" ng-if="main_wall[$index].shared_status != 'true'">
+                <div class="col col-15" ng-if="main_wall[$index].post_mine == true">
+                    <div class="wall-post-img">
+                        <img ng-src="{{image_location_user}}{{main_wall[$index].post_added_by_image}}" ui-sref="app.myProfile" >
+                    </div>
+                </div>
+                <div class="col col-15"  ng-if="main_wall[$index].post_mine != true">
+                    <div class="wall-post-img">
+                        <img ng-src="{{image_location_user}}{{main_wall[$index].post_added_by_image}}" ui-sref="app.friends_profile({friendid:main_wall[$index].post_added_by})" >
+                    </div>
+                </div>
+
+                <!--system user's post | report done-->
+                <div class="col col-75" ng-if="main_wall[$index].post_mine == true"  >
+                    <div class="wall-post-name" ui-sref="app.post({postid: main_wall[$index].wall_post_id})">
+                        <div class="mb-0"><b>{{main_wall[$index].post_added_by_name}}</b> <span class="text-size-12">{{main_wall[$index].post_company_name}}</span></div>
+                    </div>
+                    <small class="wall-post-time mb-0">{{main_wall[$index].post_added_on}}  <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + main_wall[$index].wall_post_id)"></i></small>
+                </div>
+
+                <!--other user's post | report done-->
+                <div class="col col-75" ng-if="main_wall[$index].post_mine != true">
+                    <div class="wall-post-name" ui-sref="app.post({postid: main_wall[$index].wall_post_id})">
+                        <div class="mb-0"><b>{{main_wall[$index].post_added_by_name}}</b> <span class="text-size-12">{{main_wall[$index].post_company_name}}</span></div>
+                    </div>
+                    <small class="wall-post-time mb-0">{{main_wall[$index].post_added_on}}  <i class="icon ion-ios-information text-red"  ng-click="openReport('wall_pst.' + main_wall[$index].wall_post_id)"></i></small> 
+                </div>
+
+                <div class="col col-10">
+                    <span ng-if="main_wall[$index].post_mine" class="pull-right cursor-on" ng-click="wallPostEditOption('edit-post-home', x.wall_post_id, $index)"><i class="icon ion-ios-arrow-down text-size-30"></i> </span>
+                </div>
+            </div>
+
+            <!--shared post's individual content-->
+            <p class="wall-post-text" ng-if="main_wall[$index].shared_status == true  && main_wall[$index].post_post != ''" ui-sref="app.post({postid:main_wall[$index].wall_post_id})" >{{main_wall[$index].post_post}}</p>
+
+            <!--individual post content-->
+            <div class="row status-with-photo pb-0" ng-if="main_wall[$index].shared_status != true" ui-sref="app.post({postid:main_wall[$index].wall_post_id})">
+                <div class="col no-padding">
+                    <!-- <p class="post-text mb-0 post-anchor" ng-if="main_wall[$index].post_post != ''">
+                        <span compile="post_content{{main_wall[$index].wall_post_id}}"></span>
+                    </p> -->
+                    <p class="post-text mb-0 post-anchor post-txt" ng-if="main_wall[$index].post_post != ''" ng-init="checkForExternalLinks(main_wall[$index].post_post, main_wall[$index].wall_post_id)">
+                        <span>{{main_wall[$index].post_post}}</span>
+                    </p>
+                    <p class="without-text margin-0 no-padding" ng-if="main_wall[$index].post_post == ''"></p>
+                    <div class="item item-image img{{x.image_list.length}} wall-post-img-top"  ng-repeat="post_image in main_wall[$index].image_list" ui-sref="app.post({postid:main_wall[$index].wall_post_id})">
+                        <img ng-src="{{post_image.file_name}}" >
+                    </div>
+                </div>
+            </div>
+
+            <!--share box-->
+            <div class="card wall-post mt-0 shared-wallpost" ng-if="main_wall[$index].shared_status == 'true'" ui-sref="app.post({postid:main_wall[$index].wall_post_id})">
+                <div class="row">
+                    <div class="col col-15">
+                        <div class="wall-post-img">
+                            <img ng-src="{{image_location_user}}{{main_wall[$index].shared_old_added_by_image}}" >
+                        </div>
+                    </div>
+                    <!--post by system user-->
+                    <div class="col col-75 wall-post-name" ng-if="main_wall[$index].shared_my_post == true">
+                        <p class="mb-0"><b>{{main_wall[$index].shared_old_added_by_name}}</b> added a <b>post</b></p>  
+                        <div class="wall-post-time mb-0">{{main_wall[$index].shared_old_added_date}}</div>
+                    </div>
+                    <!--post by other user-->
+                    <div class="col col-75 wall-post-name" ng-if="main_wall[$index].shared_my_post != true">
+                        <p class="mb-0"><b>{{main_wall[$index].shared_old_added_by_name}}</b> added a <b>post</b></p>  
+                        <div class="wall-post-time mb-0">{{main_wall[$index].shared_old_added_date}}</div>
+                    </div>
+                </div> 
+                <!--shared post content-->
+                <div class="row">
+                    <div class="col">
+                        <div class="shared-text">
+                            {{main_wall[$index].shared_old_post}}
+                        </div>
+                        <div class="item item-image shared-image img{{x.shared_old_images.length}}" ng-if="x.shared_old_images.length >= 0" ng-repeat="shared_post_image in main_wall[$index].shared_old_images" ui-sref="app.post({postid:main_wall[$index].wall_post_id})">
+                            <img ng-src="{{shared_post_image.file_name}}" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end share box-->
+            <!--likes and comments count-->
+            <div class="padding"  ng-if="main_wall[$index].num_like > 0 || main_wall[$index].no_of_reply > 0">
+                <div class="post-line"></div>
+            </div>
+            <div class="row no-padding" ng-if="main_wall[$index].num_like > 0 || main_wall[$index].no_of_reply > 0">
+                <div class="col no-padding">
+                    <div style="padding: 0 10px 3px;"> 
+                        <p class="mb-0">
+                            <a ng-if="x.num_like > 0"  ui-sref="app.post({postid:main_wall[$index].wall_post_id})" class="subdued">{{main_wall[$index].num_like}} {{main_wall[$index].like}} ·  </a>
+                            <a ui-sref="app.post({postid:main_wall[$index].wall_post_id})" class="subdued" ng-if="main_wall[$index].no_of_reply > 0">{{main_wall[$index].no_of_reply}} {{main_wall[$index].comment}}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!--likes and comments buttons-->
+            <div class="item tabs tabs-secondary tabs-icon-left home-likes">
+
+                <a class="tab-item {{x.like_status}}" ng-class="{{x.like_status}}"  ng-click="likeWallPost(x.wall_post_id, x.like_status, 'home', x.like_test, x)" ng-init="like_display = x.like_test_1">
+                    <i class="icon ion-thumbsup"></i> 
+                    Like 
+                </a>
+                <span class="text-gray">|</span>
+                <a class="tab-item"  ng-click="openPostApp('comment', main_wall[$index].wall_post_id, x)">
+                    <i class="icon ion-chatbox"></i>
+                    Comment
+                </a>
+                <span class="text-gray">|</span>
+
+                <div ng-if="main_wall[$index].shared_status == 'true'">
+                    <a class="tab-item"  ng-click="openSharePost(main_wall[$index].wall_post_id)">
+                        <i class="icon ion-android-share"></i>
+                        Share
+                    </a>
+                </div>
+
+                <div ng-if="main_wall[$index].shared_status != 'true'">
+                    <a class="tab-item"  ng-click="openSharePost(main_wall[$index].wall_post_id)">
+                        <i class="icon ion-android-share"></i>
+                        Share
+                    </a>
+                </div>
+            </div>
+        </div>
+        <ion-infinite-scroll on-infinite="loadMore()" spinner="ripple" distance="30%" ng-if="more"></ion-infinite-scroll>
+        <div>
+            <div class="welcome-post" ng-if="initUser==false">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="text-center">Welcome to </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="col col-50 col-offset-25">
+                            <img src="img/body/tbc-logo-bl.png" class="img-responsive" >
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-33 col-offset-33">
+                        <button class="button button-calm button-small button-full" ui-sref="app.myProfile">Update Profile</button>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="welcome-post" ng-if="activation_active==2">
+                <div class="row" ng-if="initUser!=false">
+                    <div class="col">
+                        <h3 class="text-center">Upgrade </h3>
+                    </div>
+                </div>
+Fazlan added
+                <div class="row" ng-if="initUser!=false">
+                    <div class="col">
+                        <div class="col col-50 col-offset-25">
+                            <img src="img/body/tbc-logo-bl.png" class="img-responsive" >
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-33 col-offset-33">
+                        <button class="button button-calm button-small button-full" ui-sref="app.payment">Payment Here</button>
+                    </div>
+                </div>
+            </div> -->
+            <div class="welcome-post" ng-if="initUser == true && activation_active != 2 && main_wall[0].wall_post_id == null">
+                <div class="row">
+                    <div class="col">
+                        <h3 class="text-center">Welcome to </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="col col-50 col-offset-25">
+                            <img src="img/body/tbc-logo-bl.png" class="img-responsive" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </ion-content>
+</ion-view>

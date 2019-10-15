@@ -1,0 +1,25 @@
+inAppBrowserWrap {
+  background-color: rgba(255,0,255,0.3);
+  color: rgba(255,0,255,0.3);
+}
+.inAppBrowserWrap menu {
+  overflow: auto;
+  list-style-type: none;
+  padding-left: 0;
+}
+.inAppBrowserWrap menu li {
+  font-size: 25px;
+  height: 25px;
+  float: left;
+  margin: 0 10px;
+  padding: 3px 10px;
+  text-decoration: none;
+  color: #ccc;
+  display: block;
+  background: rgba(255,0,255,0.3);
+}
+.inAppBrowserWrap menu li.disabled {
+	color: #777;
+}
+
+body {background-color:blue;}

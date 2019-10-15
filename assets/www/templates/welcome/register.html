@@ -1,0 +1,71 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-calm">
+        <h1 class="title"></h1>
+        <button class="button button-icon button-clear button-light ion-android-close" ng-click="closeRegister()"></button>
+    </ion-header-bar>
+    <ion-content class="padding">
+        <h2 class="text-center">Sign Up</h2>
+
+        <div>
+            <form name="registerForm" ng-submit="signUpUser(register)">
+                <div class="list card">
+
+                    <label class="item item-input item-stacked-label  reg-label">
+                        <span class="input-label">Business Name</span>
+                        <input type="text" placeholder="Business name" name="business_name" ng-model="register.business_name" ng-pattern="/^[\w -]*$/"
+                            required>
+                        <span class="text-red" ng-show="registerForm.business_name.$touched && registerForm.business_name.$invalid">Please enter valid business name.</span>
+                    </label>
+
+                    <label class="item item-input item-stacked-label  reg-label">
+                        <span class="input-label">Contact Name</span>
+                        <input type="text" placeholder="Contact name" name="contact_name" ng-model="register.contact_name" ng-pattern="/^(\D)+$/"
+                            required>
+                        <span class="text-red" ng-show="registerForm.contact_name.$touched && registerForm.contact_name.$invalid">Please enter valid contact name.</span>
+                    </label>
+
+                    <label class="item item-input item-stacked-label  reg-label">
+                        <span class="input-label">Email</span>
+                        <input type="email" name="email" placeholder="Email" ng-model="register.email" required>
+                        <span class="text-red" ng-show="registerForm.email.$touched && registerForm.email.$invalid">
+                            <span ng-show="registerForm.email.$error.required">Email is required.</span>
+                            <span ng-show="registerForm.email.$error.email">Invalid email address.</span>
+                        </span>
+
+                    </label>
+
+                    <label class="item item-input item-stacked-label  reg-label">
+                        <span class="input-label">Password</span>
+                        <input data-ng-model='register.password' type="password" name='password' placeholder='Password' required>
+                        <span class="text-red" ng-show="registerForm.password.$touched && registerForm.password.$invalid">Password is required.</span>
+                    </label>
+
+                    <label class="item item-input item-stacked-label  reg-label">
+                        <span class="input-label">Confirm Password</span>
+                        <input ng-model='register.password_verify' type="password" name='confirm_password' placeholder='Confirm password' required
+                            data-password-verify='register.password' required>
+                        <span class="text-red" ng-show="registerForm.password.$touched && registerForm.password.$invalid">Confirm password is required.</span>
+                        <span class="text-red" ng-show="register.password!=register.password_verify && register.password_verify !='' && register.password_verify!=null">Passwords don't match</span>
+
+                    </label>
+                </div>
+
+                <p class="light text-center">
+                    By signing up, you agree to the
+                    <br>Terms of Service &amp; Privacy Policy
+                </p>
+
+                <button class="button button-block button-calm button-outline" ng-disabled="!registerForm.$valid || register.password!=register.password_verify">
+                    <b>Join now</b>
+                </button>
+            </form>
+        </div>
+
+        <p class="calm text-center">
+            Already have an account?
+            <a href="" class="calm" ng-click="closeRegister(); openLogin()">
+                <b>Sign in</b>
+            </a>
+        </p>
+    </ion-content>
+</ion-modal-view>

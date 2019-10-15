@@ -1,0 +1,120 @@
+<ion-modal-view cache-modal-view="false">
+	<form name="productForm" novalidate ng-submit="submit()">
+		<ion-header-bar class="bar-calm">
+			<button class="button button-clear" ng-click="closeNewAd()">
+				<i class="icon ion-ios-arrow-left"></i> Back
+			</button>
+			<div class="h1 title">Advertisement</div>
+			<button class="button button-assertive" ng-click="addProduct(product)">Save</button>
+		</ion-header-bar>
+		<ion-content cache-view="false">
+			<div ng-if="(productImages.length + img.length) == 0">
+				<img src="img/body/no-image-box.png" class="img-responsive">
+			</div>
+			<span ng-model="product.product_id" ng-value="product.product_id"></span>
+			<div class="row row-ruby">
+				<div class="col col-33 ad-show-images-box" ng-repeat="x in productImages">
+					<img ng-src="{{x.file_name}}" class="ad-show-images" ng-click="removeSelectedImage(x, product.product_id)">
+					<div class="ad-img-remove">
+						<i class="icon ion-close-round ad-img-remove" ng-click="removeSelectedImage(x, product.product_id)"></i>
+					</div>
+				</div>
+				<div class="col col-33 ad-show-images-box" ng-repeat="i in img">
+					<img ng-src="{{i}}" class="ad-show-images" ng-click="removeUploadImage(i)">
+					<div class="ad-img-remove">
+						<i class="icon ion-close-round ad-img-remove" ng-click="removeUploadImage(i)"></i>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col col-33 col-offset-33" ng-if="(5 - (productImages.length + img.length)) > 0">
+					<a class="button button-calm button-full button-small" ng-click="selectImages((5 - (productImages.length + img.length)), 'product')">
+						<i class="icon ion-ios-camera"></i> Upload </a>
+				</div>
+			</div>
+			<div class="item item-divider"> </div>
+			<div class="list list-inset">
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Ad Name</span>
+					<input type="text" placeholder="Type ad name here" ng-model="product.product_name" name="product_name" required>
+					<span class="text-red" ng-show="productForm.product_name.$touched && productForm.product_name.$invalid">Product name is required.</span>
+				</label>
+
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Ad Price</span>
+					<input type="text" placeholder="Type Ad Price Here" ng-model="product.basic_price" name="basic_price" ng-change="calculateDiscount(product.discount_price_num, product.basic_price)"
+					    required>
+					<span class="text-red" ng-show="productForm.basic_price.$touched && productForm.basic_price.$invalid">Invalid entry </span>
+				</label>
+
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Discount Rate</span>
+					<input type="text" placeholder="Type Discount Rate Here" name="dis_rate" ng-model="product.discount_price_num" ng-change="calculateDiscount(product.discount_price_num, product.basic_price)">
+					<span class="text-red" ng-show="productForm.dis_rate.$touched && productForm.dis_rate.$invalid">Invalid entry</span>
+				</label>
+
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Discount Price</span>
+					<input type="text" placeholder="Discounted Price" name="discounted_price" ng-model="product.discounted_price" readonly>
+				</label>
+
+				<label class="item item-input item-stacked-label">
+					<span class="input-label">Expiry Date</span>
+					<div ion-datetime-picker date ng-model="product.expiry_date" title="'The Business Club'" only-valid="[{'outside': {'initial': '{{product.expiry_date==null?todayDate:product.expiry_date}}'}, 'inclusive': true}]">
+						{{product.expiry_date| date: "dd-MM-yyyy"}}
+						<span ng-if="product.expiry_date == null">dd-MM-yyyy </span>
+					</div>
+					<div ion-datetime-picker date ng-model="dateValue2"> {{dateValue2| date: "yyyy-mm-dd H:mm:ss"}}
+						<h1>asdfsdf {{dateValue2}}</h1>
+					</div>
+					<span class="text-red" ng-show="productForm.expiry_date.$touched && productForm.expiry_date.$invalid">Invalid entry</span>
+				</label>
+				<label class="item item-input item-select">
+					<div class="input-label">
+						Category
+					</div>
+					<select ng-model="product.main_cat_id" name="product.main_cat_id" ng-change="getSubCategory(product.main_cat_id)" required>
+						<option value="-1">None</option>
+						<option ng-selected="{{x.id == product.main_cat_id}}" ng-repeat="x in categories" value="{{x.id}}">{{x.category_name}}</option>
+					</select>
+				</label>
+				<label class="item item-input item-select" ng-if="enable_subcat">
+					<div class="input-label">
+						Sub Category
+					</div>
+					<select ng-model="product.sub_category_id" name="sub_category_id" ng-change="getBrands(product.sub_category_id)">
+						<option value="-1">None
+							<option ng-selected="{{sx.id==product.sub_category_id}}" ng-repeat="sx in sub_categories" value="{{sx.id}}">{{x.category_name}}</option>
+					</select>
+				</label>
+				<label class="item item-input item-select" ng-if="enable_brand">
+					<div class="input-label">
+						Brand
+					</div>
+					<select ng-model="product.product_brand" name="product_brand">
+						<option value="-1">None</option>
+						<option ng-repeat="bx in brands" ng-selected="{{bx.id==product.product_brand}}" value="{{bx.id}}">{{x.brand_name}}</option>
+					</select>
+				</label>
+			</div>
+			<div class="item item-divider"></div>
+			<div class="list list-inset mb-10">
+				<label class="item item-input item-stacked-label">
+					<option value="-1">Description Summary</option>
+					<textarea class="width-100 border-gray padding" type="text" ng-maxlength="50" placeholder="Smaill Description" ng-model="product.product_small_description"
+					    name="product_small_description" required></textarea>
+					<p class="text-red" ng-show="productForm.product_small_description.$touched && productForm.product_small_description.$invalid">Summary is required</p>
+					<p class="text-red" ng-show="productForm.product_small_description.$error.maxlength">Summary description is too long</p>
+				</label>
+
+				<label class="item item-input item-stacked-label mb-10">
+					<option value="-1">Description</option>
+					<textarea class="width-100 border-gray padding" ng-maxlength="750" type="text" placeholder="Description" ng-model="product.product_description"
+					    name="product_description" required></textarea>
+					<span class="text-red" ng-show="productForm.product_description.$touched && productForm.product_description.$invalid">Description is required</span>
+					<p class="text-red" ng-show="productForm.product_description.$error.maxlength">Description is too long</p>
+				</label>
+			</div>
+		</ion-content>
+	</form>
+</ion-modal-view>

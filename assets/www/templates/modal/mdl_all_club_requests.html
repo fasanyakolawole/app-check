@@ -1,0 +1,35 @@
+<ion-modal-view cache-modal-view="false">
+        <ion-header-bar class="bar-calm">
+            <button class="button button-clear" ng-click="closeModalAllClubRequests()">
+                <i class="icon ion-ios-arrow-left"></i> Back
+            </button>
+            <div class="h1 title">All Club Requests</div>
+            
+        </ion-header-bar>
+        <ion-content cache-view="false">
+         
+            <ion-list class="">
+				<ion-item class="connection-list" ng-repeat="z in users">
+					<div class="row no-padding">
+						<div class="col col-15 no-padding">
+							<div class="view-pro-img">
+							<img src="{{z.user_image}}" ng-click="openFriendsProfile({{z.id}})">
+							</div>
+						</div> 
+						<div class="col col-50 no-padding view-pro">
+							<h2><a ng-click="openFriendsProfile({{z.id}})">{{z.member_name}}</a></h2>
+							<p ng-click="openFriendsProfile({{z.id}})">{{z.member_company}}</p>
+							<small class="text-size-12 text-color-dark text-bold">{{z.address}}</small>
+						</div>
+						<div class="col col-3" ng-if="activation_active==1">
+							<div class="pull-right disconnect-friends member-list-buttons" ng-if="i.me != true">
+								<a class="button button-calm button-small" ng-click="accept_reject_club_member('accept', z.id)"> <i class="icon ion-checkmark"></i> </a>
+                                
+                                <a class="button button-assertive button-small" ng-click="accept_reject_club_member('reject', z.id)"> <i class="icon ion-android-close"></i> </a>
+							</div>
+						</div>
+					</div>
+				</ion-item>
+			</ion-list>
+        </ion-content>
+</ion-modal-view>

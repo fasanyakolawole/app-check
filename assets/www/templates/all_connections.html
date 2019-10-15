@@ -1,0 +1,35 @@
+<ion-view view-title="All Connections">
+	<ion-nav-buttons side="secondary">
+		<button class="button button-icon ion-grid" ng-click="toggleMenu()"></button>
+	</ion-nav-buttons>
+	<ion-content  ng-init="seeMoreFriends()">
+		<div class="has-input item-input-inset bar bar-header disable-user-behavior">
+			<label class="item-input-wrapper">
+				<input type="search" placeholder="Search" ng-model="query" ng-init="query=''">
+			</label>
+			<button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''">
+				Cancel 
+			</button>  
+		</div>
+		<div class="list mb-0 border-bottom" ng-repeat="i in my_friends | filter:query track by $index">
+			<div class="row">
+				<div class="col col-15">
+					<div class="view-pro-img">
+						<img ng-src="{{i.image}}" ui-sref="app.friends_profile({friendid:i.friend_id})">
+					</div>
+				</div>
+				<div class="col col-85 view-pro">
+					<h2><a ui-sref="app.friends_profile({friendid:i.friend_id})">{{i.contact_name}}</a></h2>
+					<p ui-sref="app.friends_profile({friendid:i.friend_id})">{{i.company_name}}</p>
+					<small class="text-size-12 text-color-dark text-bold">{{i.town_city}} | {{i.county}} | UK</small>
+					<div class="pull-right mt--20 disconnect-friends" ng-if="i.me != true">
+						<a class="button button-balanced button-small" ng-if="i.f_status == 'Connect'" ng-click="sendFriendRequest(i.friend_id, 'allConnections')"> <i class="icon ion-person-add"></i></a>
+						<a class="button button-balanced button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="acceptFriendRequest(i.f_id, 'allConnections')"> <i class="icon ion-person-add"></i></a>
+						<a class="button button-assertive button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="rejectFriendRequest(i.f_id, 'allConnections')"> <i class="icon ion-person-add"></i></a>
+						<a class="button button-req-sent button-small" ng-if="i.f_status == 'Request Sent'" ng-click="cancelFriendRequest(i.friend_id, 'allConnections')"> Pending </a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

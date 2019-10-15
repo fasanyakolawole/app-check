@@ -1,0 +1,129 @@
+<ion-view view-title="Notifications">
+	<div ng-if="activation_active == 2" >
+		<style>
+			.overflow-scroll .scroll {
+				position: static;
+				height: auto;
+				-webkit-transform: translate3d(0, 0, 0);
+			}
+		</style>
+	</div>
+	<ion-content class="has-tabs-top" overflow-scroll="true">
+		<div ng-if="activation_active == 2" class="overlay-notification">
+			<h4> <i class="icon ion-android-alert text-size-30"></i> <br>Your trial period is over. Please upgrade your account.<br>
+				<button ui-sref="app.payment" class="button button-small text-bold">Upgrade</button>
+			</h4> 
+		</div>
+		<ion-refresher spinner="ripple" pulling-icon="ion-chevron-up" spinner="ripple" on-refresh="doRefresh()"></ion-refresher>
+		<div class="list notification-list">
+			<ion-list class="notification-list-box" ng-repeat="i in notifications track by $index">
+				
+				<!-- notification for wall post like -->
+				<ion-item ng-click="notificationClass($index)" class="item-complex {{i.api_notification_view}} item item-avatar noti-list-padding" ng-if="i.notification_type == 'wall_post_like_notification'" ui-sref="app.post({postid:i.post_id,navigate_from:'notifications',not_type:i.notification_type,readid:i.post_id_like_id})">
+					<img ng-src="{{i.contact_image}}">
+					<div>
+						<b>{{i.contact_name}}</b>
+						<span> {{i.status_text}}</span>
+					</div>
+					<span class="date-time"> <i class="icon ion-thumbsup text-thumbsup"></i> {{i.date_time}}</span>
+				</ion-item>
+				
+				<!-- notification for wall post reply like -->
+				<ion-item ng-click="notificationClass($index)"  class="item-complex {{i.api_notification_view}} item item-avatar noti-list-padding" ng-if="i.notification_type == 'wall_post_reply_like_notification'" ui-sref="app.post({postid:i.post_id,navigate_from:'notifications',not_type:i.notification_type,readid:i.rep_lk_id})">
+					<img ng-src="{{i.contact_image}}">
+					<div>
+						<b>{{i.contact_name}}</b>
+						<span> {{i.status_text}}</span>
+					</div>
+					<span class="date-time"> <i class="icon ion-thumbsup text-thumbsup"></i> {{i.date_time}}</span>
+				</ion-item>
+				
+				<!-- notification for friend request -->
+				<ion-item ng-click="notificationClass($index)" class=" {{i.api_notification_view}} item item-avatar noti-list-padding" ng-if="i.notification_type == 'friend_request'" >
+					<img ng-src="{{i.contact_image}}" ng-click="openConnRequests('notifications', i.notification_type, i.contact_id);">
+					<div ng-click="openConnRequests('notifications', i.notification_type, i.contact_id);">
+						<b>{{i.contact_name}}</b>
+						<span> {{i.status_text}}</span>
+					</div>
+					<span class="date-time" ng-click="openConnRequests('notifications', i.notification_type, i.contact_id);"> <i class="icon ion-person text-blue"></i> {{i.date_time}}</span>
+				</ion-item>
+				
+				<!-- notification for wall post reply -->
+				<ion-item ng-click="notificationClass($index)"  class="item-complex {{i.api_notification_view}} item item-avatar noti-list-padding" ng-if="i.notification_type == 'wall_post_reply_notification'" ui-sref="app.post({postid:i.post_id,navigate_from:'notifications',not_type:i.notification_type,readid:i.wall_post_reply_id})">
+					<img ng-src="{{i.contact_image}}">
+					<div style="overflow: visible">
+						<b ui-sref="app.friends_profile({friendid:i.contact_id})">{{i.contact_name}}</b>
+						<span>{{i.status_text}}</span>
+					</div>
+					<span class="date-time"> <i class="icon ion-social-twitch text-green"></i> {{i.date_time}}</span>
+				</ion-item>
+				
+				<!-- notification for ads enquiries -->
+				<ion-item ng-click="notificationClass($index)"  class="item-complex {{i.api_notification_view}} item item-avatar noti-list-padding" ng-if="i.notification_type == 'ad_enquires'"ui-sref="app.viewMemberEnquiry({orderId:i.pro_noti_view,navigate_from:'notifications',not_type:i.notification_type,readid:i.pro_noti_view})">
+					<img ng-src="{{i.contact_image}}" ui-sref="app.friends_profile({friendid:i.contact_id})">
+					<div style="overflow: visible">
+						<b ui-sref="app.friends_profile({friendid:i.contact_id})">{{i.contact_name}}</b>
+						<span> {{i.status_text}} <a>{{i.pro_noti_name}}</a>{{i.status_text_one}}</span>
+					</div>
+					<span class="date-time"> <i class="icon ion-social-twitch text-green"></i> {{i.date_time}}</span>
+				</ion-item>
+				
+				<!-- notification for group -->
+				<ion-item ng-click="notificationClass($index)"  class="item-complex {{i.api_notification_view}} item item-avatar noti-list-padding" ng-if="i.notification_type == 'group_notification'" ui-sref="app.view_clubs({id:i.group_id})">
+					<img ng-src="{{i.profile_image}}" ui-sref="app.friends_profile({friendid:i.contact_id})">
+					<div style="overflow: visible">
+						<b ui-sref="app.friends_profile({friendid:i.contact_id})">{{i.contact_name}}</b>
+						<span>{{i.status_text}}<a>{{i.group_name}}</a>{{i.status_text_one}}</span>
+					</div>
+					<span class="date-time"> <i class="icon ion-social-twitch text-green"></i> {{i.comment_on}}</span>
+				</ion-item>
+				
+				<!-- notification for new group request accepted-->
+				<ion-item ng-click="notificationClass($index)"  class="item-complex {{i.api_notification_view}} item item-avatar noti-list-padding" ng-if="i.notification_type == 'new_group_request'" ui-sref="app.view_clubs({id:i.group_id})">
+					<img ng-src="{{i.contact_image}}" ui-sref="app.friends_profile({friendid:i.contact_id})">
+					<div style="overflow: visible">
+						<b ui-sref="app.friends_profile({friendid:i.contact_id})">{{i.contact_name}}</b>
+						<span>{{i.status_text}}<a>{{i.group_name}}</a>{{i.status_text_one}}</span>
+					</div>
+					<span class="date-time"> <i class="icon ion-social-twitch text-green"></i> {{i.date_time}}</span>
+				</ion-item>
+				
+				<!-- notification for my group member request-->
+				<ion-item ng-click="notificationClass($index)"  class="item-complex {{i.api_notification_view}} item item-avatar noti-list-padding" ng-if="i.notification_type == 'my_group_member_request'" ui-sref="app.view_clubs({id:i.my_group_id})">
+					<img ng-src="{{i.contact_image}}" ui-sref="app.friends_profile({friendid:i.my_group_member_id})">
+					<div style="overflow: visible">
+						<b ui-sref="app.friends_profile({friendid:i.contact_id})">{{i.contact_name}}</b>
+						<span>{{i.status_text}}<a>{{i.my_group_name}}</a>{{i.status_text_one}}</span>
+					</div>
+					<span class="date-time"> <i class="icon ion-social-twitch text-green"></i> {{i.joined_date}}</span>
+				</ion-item>
+				
+				<!-- notification for wall post share -->
+				<ion-item ng-click="notificationClass($index)"  class="item-complex {{i.api_notification_view}} item item-avatar noti-list-padding" ng-if="i.notification_type == 'wall_post_share_notification'" ui-sref="app.post({postid:i.post_id,navigate_from:'notifications',not_type:i.notification_type,readid:i.share_post_id})">
+					<img ng-src="{{i.contact_image}}">
+					<div>
+						<b>{{i.contact_name}}</b>
+						<span>{{i.status_text}}</span>
+					</div>
+					<span class="date-time"> <i class="icon ion-thumbsup text-thumbsup"></i> {{i.date_time}}</span>
+				</ion-item>
+				
+				<!-- notification for club event attendance -->
+				<ion-item ng-click="notificationClass($index)"  class="item-complex {{i.api_notification_view}} item item-avatar noti-list-padding" ng-if="i.notification_type == 'club_event_attendance'" ui-sref="app.view_club_event({id:i.event_id,navigate_from:'notifications',not_type:i.notification_type,readid:i.readid})">
+					<img ng-src="{{i.contact_image}}">
+					<div>
+						<b>{{i.contact_name}}</b>
+						<span>{{i.status_text}}</span>
+					</div>
+					<span class="date-time"> <i class="icon ion-thumbsup text-thumbsup"></i> {{i.date_time}}</span>
+				</ion-item>
+			</ion-list>
+		</div>
+		
+		<div class="padding text-center text-blue" ng-if="notifications_count == -1">
+			<p>No more notifications </p>
+			<p> <i class="ion-android-notifications-none text-size-30"></i> </p>
+		</div> 
+		<ion-infinite-scroll on-infinite="loadMore()" spinner="ripple" distance="10%" ng-if="more"></ion-infinite-scroll>
+	</ion-content>
+</ion-view>

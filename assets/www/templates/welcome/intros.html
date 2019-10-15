@@ -1,0 +1,18 @@
+<ion-view hide-nav-bar="false">
+
+   
+    <div class="welcome-screen" >
+        <h1>Welcome</h1>
+        <div class="welcome-screen-logo">
+            <img src="img/body/tbc-logo-bl.png">
+        </div>
+        <div class="padding" ng-show="progressPercent > 0">
+            <div class="loader" style="width: {{progressPercent}}%;">
+                <p class="percent">{{progressPercent}}%</p>
+            </div>
+        </div>
+    </div>
+    <ion-nav-buttons side="secondary">
+        <button class="button button-icon ion-grid" ng-click="toggleMenu()"></button>
+    </ion-nav-buttons>
+</ion-view> 

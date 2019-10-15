@@ -1,0 +1,11 @@
+{
+  "name": "The Business Club",
+  "short_name": "The Business Club",
+  "start_url": "index.html",
+  "display": "standalone",
+  "icons": [{
+    "src": "icon.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }]
+}

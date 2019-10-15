@@ -1,0 +1,42 @@
+<ion-modal-view class="">
+    <ion-header-bar class="bar bar-calm">
+        <h1 class="title"></h1>
+        <button class="button button-icon button-clear button-light ion-android-close" ng-click="closeLogin()"></button>
+    </ion-header-bar>
+    <ion-content class="padding">
+        <h3 class="text-center">Sign In </h3>
+        <form ng-submit="signInUser(user)" name="loginForm">
+            <div class="list card">
+
+                <label class="item item-input">
+                    <input type="email" name="email" ng-model="user.email" required placeholder="Email">
+                </label>
+
+                <label class="item item-input">
+                    <input type="password" ng-model="user.password" required placeholder="Password">
+                    <span style="color:red" ng-show="user.password.$touched && user.password.$invalid">Password is required.</span>
+                </label>
+
+            </div>
+            <div class="text-red mt-10" ng-show="loginForm.email.$touched && loginForm.email.$invalid">
+                <p ng-show="loginForm.email.$error.required">Email is required.</p>
+                <p ng-show="loginForm.email.$error.email">Invalid email address.</p>
+            </div>
+            <button class="button button-block button-outline button-assertive" ng-disabled="!loginForm.$valid">
+                <b>Sign in</b>
+            </button>
+        </form>
+        <div class="light row">
+            <div class="col calm">
+                <a class="calm" ng-click="closeLogin(); openPasswordReset()">
+                    Forgot password
+                </a>
+            </div>
+            <div class="col text-right">
+                <a href="" class="calm" ng-click="closeLogin(); openRegister()">Join Now</a>
+            </div>
+
+        </div>
+
+    </ion-content>
+</ion-modal-view>

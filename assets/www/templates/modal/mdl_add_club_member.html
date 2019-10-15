@@ -1,0 +1,40 @@
+<ion-modal-view cache-modal-view="false">
+    <ion-header-bar class="bar-calm">
+        <button class="button button-clear" ng-click="closeModalAddClubMember()">
+            <i class="icon ion-ios-arrow-left"></i> Back
+        </button>
+        <div class="h1 title">Add Club Member</div>
+
+    </ion-header-bar>
+    <ion-content cache-view="false">
+        <div class="has-input item-input-inset bar bar-header disable-user-behavior">
+		<label class="item-input-wrapper">
+                        <input type="text" placeholder="Search" ng-model="query" ng-change="getSearchValue(query,var3)" >
+                          
+		</label>
+		<button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''">
+			Cancel 
+		</button>  
+		</div> 
+        <ion-item class="connection-list" ng-repeat="z in users">
+			<div class="row no-padding">
+				<div class="col col-15 no-padding">
+					<div class="view-pro-img">
+						<img src="{{z.user_image}}" ng-click="openFriendsProfile({{z.id}})">
+					</div>
+				</div> 
+				<div class="col col-85 no-padding view-pro">
+					<h2><a ng-click="openFriendsProfile({{z.id}})">{{z.member_name}}</a></h2>
+					<p ng-click="openFriendsProfile({{z.id}})">{{z.member_company}}</p>
+					<small class="text-size-12 text-color-dark text-bold" ng-click="openFriendsProfile({{z.id}})">{{z.address}}</small>
+					<div class="pull-right mt--20 disconnect-friends">
+                        <a class="button button-calm button-small" ng-click="addFriendToTheClub(z.id)">
+                            <i class="icon ion-plus-round"></i>
+                        </a>
+
+                    </div>
+				</div>
+			</div>
+		</ion-item>
+    </ion-content>
+</ion-modal-view>

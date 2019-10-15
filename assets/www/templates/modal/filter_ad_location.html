@@ -1,0 +1,33 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-calm">
+        <button class="button button-clear" ng-click="closeLocationFilter()">
+            <i class="icon ion-ios-arrow-left"></i> Back
+        </button>
+        <div class="h1 title">Filter Location</div>
+    </ion-header-bar>
+    <ion-content>
+         
+        <div class="list list-inset filter-ad-location">
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Select County
+                </div>
+                <select ng-model="product.county_id" ng-options="obj.County as obj.County for obj in counties" ng-change="getTown(product.county_id)">    
+                    <option value="">All</option>
+                </select>
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Select Town
+                </div>
+                <select ng-model="product.town_id" ng-options="obj.id as obj.Town for obj in towns">    
+                    <option value="">All</option>
+                </select>
+            </label>
+        </div>
+        <div class="padding pull-right">
+            <button class="button button-assertive button-small" ng-click="getFriends(product)">Apply</button> 
+        </div>
+        
+    </ion-content>
+</ion-modal-view>

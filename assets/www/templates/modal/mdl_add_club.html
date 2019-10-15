@@ -1,0 +1,79 @@
+<ion-modal-view cache-modal-view="false">
+    <form name="clubForm" novalidate ng-submit="submit()">
+        <ion-header-bar class="bar-calm">
+            <button class="button button-clear" ng-click="closeModalAddClub()">
+                <i class="icon ion-ios-arrow-left"></i> Back
+            </button>
+            <div class="h1 title">{{clubTitle}}</div>
+            <button class="button button-assertive" ng-click="addClub(club)">Save</button>
+
+        </ion-header-bar>
+        <ion-content cache-view="false">
+            <span ng-model="club.club_id" ng-value="club.club_id"></span>
+
+            <div class="list text-center profile-edit-photo-2">
+                <div class="profile-top profile-edit-photo">
+
+                    <img src="{{clubImagewithUrl}}" class="avatar-profile" alt="" ng-click="selectClubLogo(1, 'clubLogo')">
+                </div>
+                <button type="button" class="button button-calm button-small" ng-click="selectClubLogo(1, 'clubLogo')">
+                    <i class="icon ion-ios-camera"></i> Select Image
+                </button>
+            </div>
+
+            <div class="item item-divider"> </div>
+
+            <div class="list list-inset">
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Club Name</span>
+                    <input type="text" placeholder="Type club name here" ng-model="club.club_name" name="club_name" required>
+                    <span class="text-red" ng-show="clubForm.club_name.$touched && clubForm.club_name.$invalid">Club name is required.</span>
+                </label>
+
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Description</span>
+                    <textarea placeholder="Description" ng-model="club.club_description" name="club_description" rows="7"></textarea>
+                </label>
+
+                <label class="item item-input item-select">
+                    <span class="input-label">
+                        Select County
+                    </span>
+                    <select data-ng-model="club.county_id" name="county_id" ng-change="getTownForClubCreation(club.county_id)">
+                        <option value="All">All</option>
+                        <option ng-repeat="x in counties track by $index" value="{{x.County}}" ng-if="$index > 0">{{x.County}}</option>
+                    </select>
+                </label>
+                <label class="item item-input item-select" ng-if="enable_town">
+                    <span class="input-label">
+                        Select Town
+                    </span>
+                    <select data-ng-model="club.town_id" name="town_id">
+                        <option value="All">Select your town</option>
+                        <option ng-repeat="x in townsForClubCreation" value="{{x.id}}" ng-if="$index > 0">{{x.Town}}</option>
+                    </select>
+                </label>
+            </div>
+            <div class="list list-inset">
+                <div class="item item-divider">Gallery Images </div>
+                <div class="list text-gray padding">
+                    <p class="text-center">You can upload up to 5 images</p>
+                </div>
+                <div class="row row-ruby">
+                    <div class="col col-33 ad-show-images-box" ng-repeat="i in img track by $index">
+                        <img ng-src="{{i}}" class="ad-show-images">
+                        <div class="ad-img-remove">
+                            <i class="icon ion-close-round ad-img-remove" ng-click="removeSelectedImage({{$index}},'clubGallery')"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-33 col-offset-33" ng-if="(5 - clubGallery.length) > 0">
+                            <a class="button button-calm button-full button-small" ng-click="selectClubImages((5 - (clubGallery.length)), 'clubGallery', this)">
+                                <i class="icon ion-ios-camera"></i> Upload </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ion-content>
+    </form>
+</ion-modal-view>

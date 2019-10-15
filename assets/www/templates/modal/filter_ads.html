@@ -1,0 +1,63 @@
+<ion-modal-view>
+    <form name="FilterForm">
+        <ion-header-bar class="bar-calm">
+            <button class="button button-clear" ng-click="closeFilter()">
+                <i class="icon ion-ios-arrow-left"></i> Back
+            </button>
+            <div class="h1 title">Filter</div>
+        </ion-header-bar>
+        <ion-content>
+            <div class="list list-inset filter-ads">
+                <label class="item item-input item-select">
+                    <div class="input-label">
+                        Select County
+                    </div>
+                    <select data-ng-model="location.county_id" name="county_id" ng-change="getTown(location.county_id)">
+                        <option value="All">All</option>
+                        <option ng-repeat="x in counties track by $index" value="{{x.County}}" ng-if="$index > 0">{{x.County}}</option>
+                    </select>
+                </label>
+                <div class="item item-input item-select" ng-if="enable_town">
+                    <div class="input-label">
+                        Select Town
+                    </div>
+                    <select data-ng-model="location.town_id" name="town_id">
+                        <option value="All">All</option>
+                        <option ng-repeat="x in towns track by $index" value="{{x.id}}" ng-if="$index > 0">{{x.Town}}</option>
+                    </select>
+                </div>
+                <div class="mt-10 pull-right">
+                    <button class="button button-assertive button-small" ng-click="FilterAds(location, '', '')">
+                        Apply
+                    </button>
+                </div>
+            </div>
+            <div class="item item-divider"> </div>
+            <div class="padding">
+                <ion-list>
+                    <div class="ad-l-filter" ng-repeat="group in category_groups">
+                        <ion-item class="item-stable" ng-click="group.childs.length >= 1 ? toggleGroup(group) : FilterAds(location, group.id)" ng-class="{active: isGroupShown(group)}">
+                            &nbsp; {{group.name}}
+                            <i class="icon assertive" ng-if="group.childs.length >= 0" ng-class="isGroupShown(group) ? 'ion-android-arrow-dropright' : 'ion-android-arrow-dropdown'"></i>
+                        </ion-item>
+                        <a class="sub-ad-filter">
+                            <ion-item class="item-accordion" ng-repeat="item in group.childs" ng-click="FilterAds(location, group.id, item.id)" ng-show="isGroupShown(group)">
+                                <i class="icon ion ion-android-arrow-dropright"></i> &nbsp; {{item.name}}
+                            </ion-item>
+                        </a>
+                    </div>
+
+                </ion-list>
+
+                <ion-list>
+                    <a class="sub-ad-filter">
+                        <ion-item class="item-accordion" ng-click="FilterAds()">
+                            <i class="icon ion ion-android-arrow-dropright"></i> &nbsp; All
+                        </ion-item>
+                    </a>
+                </ion-list>
+
+            </div>
+        </ion-content>
+    </form>
+</ion-modal-view>

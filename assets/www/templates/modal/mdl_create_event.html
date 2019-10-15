@@ -1,0 +1,107 @@
+<ion-modal-view cache-modal-view="false">
+    <form name="productForm" novalidate ng-submit="submit()">
+        <ion-header-bar class="bar-calm">
+            <button class="button button-clear" ng-click="closeModal()">
+                <i class="icon ion-ios-arrow-left"></i> Back
+            </button>
+            <div class="h1 title">{{clubEventTitle}}</div>
+            <button class="button button-assertive" ng-click="addClubEvent(clubEvent, navigate_from)" ng-disabled="productForm.$invalid">Save</button>
+
+        </ion-header-bar>
+        <ion-content cache-view="false">
+
+            <div class="item item-divider"> Event Details </div>
+
+            <div class="list list-inset">
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Event Title</span>
+                    <input type="text" placeholder="Event Title" ng-model="clubEvent.title" name="title" required>
+                    <span class="text-red" ng-show="productForm.title.$touched && productForm.title.$invalid">Event name is required.</span>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Venue</span>
+                    <input type="text" placeholder="Venue" ng-model="clubEvent.venue" name="venue" required>
+                    <span class="text-red" ng-show="productForm.venue.$touched && productForm.venue.$invalid">Venue is required.</span>
+                </label>
+
+                <!-- <label class="item item-input item-stacked-label">
+                    <span class="input-label">Event Date</span>  
+                    
+                    <input type="date" placeholder="Event Date" ng-model="clubEvent.event_date" name="event_date" ng-min="minDate" required>
+
+                    <span class="text-red" ng-show="productForm.event_date.$touched && productForm.event_date.$invalid">Please select a future date.</span>
+                </label> -->
+
+                <div class="item item-input item-stacked-label">
+                    <span class="input-label">Event Date</span>
+                    <div ion-datetime-picker date ng-model="clubEvent.event_date" title="'The Business Club'" only-valid="[{'outside': {'initial': '{{minDate==null?todayDate:minDate}}'}, 'inclusive': true},{'after': 'today', 'inclusive': true}]" ng-change="changeEventDate(clubEvent.event_date)" required>
+                        {{clubEvent.event_date | date: "dd-MM-yyyy"}}
+                    </div>
+                    <span class="text-red" ng-show="productForm.event_date.$touched && productForm.event_date.$invalid">Please select a future date.</span>
+                </div>
+
+
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Event Start Time</span>
+                    <input type="time" placeholder="Event Start Time" ng-model="clubEvent.start_time" name="start_time" ng-change="changeEventStartTime(clubEvent.start_time)" ng-min="minStartTime" required>
+                    <span class="text-red" ng-show="productForm.start_time.$touched && productForm.start_time.$invalid">Start time should be a future time.</span>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Event End Time</span>
+                    <input type="time" placeholder="Event End Time" ng-model="clubEvent.end_time" name="end_time" ng-min="minEndTime" required>
+                    <span class="text-red" ng-show="productForm.end_time.$touched && productForm.end_time.$invalid">End time should be greater than start time.</span>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Address 1</span>
+                    <input type="text" placeholder="Address 1" ng-model="clubEvent.address_1" name="address_1">
+                    <!-- <span class="text-red" ng-show="productForm.address_1.$touched && productForm.address_1.$invalid">Address line 1 is required.</span> -->
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Address 2</span>
+                    <input type="text" placeholder="Address 2" ng-model="clubEvent.address_2" name="address_2">
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Town</span>
+                    <input type="text" ng-model="clubEvent.town_name" value="{{clubEvent.town_name}}" readonly>
+                    <input ng-model="clubEvent.town_city" type="hidden" name="town_city" value="{{clubEvent.town_city}}" />
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">County</span>
+                    <input type="text" ng-model="clubEvent.county" name="county" value="{{clubEvent.county}}" readonly />
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Postcode</span>
+                    <input type="text" placeholder="Post Code" ng-model="clubEvent.post_code" style="text-transform: uppercase;" name="post_code"
+                        >
+                    <span class="text-red" ng-show="productForm.post_code.$touched && productForm.post_code.$invalid">Post code is required.</span>
+                </label>
+
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Description</span>
+                    <textarea placeholder="Description" ng-model="clubEvent.description" name="description" rows="7"></textarea>
+                    <span class="text-red" ng-show="productForm.description.$touched && productForm.description.$invalid">Add Event Summary </span>
+                </label>
+            </div>
+            <div class="list list-inset">
+                <div class="item item-divider">Event Images </div>
+                <div class="list text-gray padding">
+                    <p class="text-center">You can upload up to 5 images</p>
+                </div>
+                <div class="row row-ruby">
+                    <div class="col col-33 ad-show-images-box" ng-repeat="i in img track by $index">
+                        <img ng-src="{{i}}" class="ad-show-images">
+                        <div class="ad-img-remove">
+                            <i class="icon ion-close-round ad-img-remove" ng-click="removeSelectedImage({{$index}}, 'eventGallery')"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-33 col-offset-33" ng-if="(5 - eventGallery.length) > 0">
+                            <a class="button button-calm button-full button-small" ng-click="selectClubImages((5 - (eventGallery.length)), 'eventGallery')">
+                                <i class="icon ion-ios-camera"></i> Upload </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ion-content>
+    </form>
+</ion-modal-view>

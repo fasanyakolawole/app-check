@@ -1,0 +1,94 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-calm">
+        <button class="button button-clear" ng-click="closeAddAdsEnquiry()">
+            <i class="icon ion-ios-arrow-left"></i> Back
+        </button>
+        <div class="h1 title">Ad Enquiry</div>
+    </ion-header-bar>
+    <ion-content>
+        <ion-slide-box on-slide-changed="slideHasChanged($index)">
+            <ion-slide ng-repeat="i in product.images">
+                <div class="img-view-ad">
+                    <img ng-src="{{i.file_name}}">
+                </div>
+            </ion-slide>
+        </ion-slide-box>
+        
+        
+        
+        <div class="list card padding">
+            <h4> Member Information </h4>
+            <div class="line"></div>
+            <div class="row">
+                <div class="col-50">
+                    Member's Name
+                </div>
+                <div class="col-50">
+                    {{product.added_by_name}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-50">
+                     Company Name
+                </div>
+                <div class="col-50">
+                    {{product.view_member}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-50">
+                    Contact No
+                </div>
+                <div class="col-50">
+                    {{product.user_tel}}
+                </div>
+            </div>
+        </div>
+        
+        <div class="list card padding">
+            <h4> Product Details </h4>
+            <div class="line"></div>
+            <div class="row">
+                <div class="col-50">
+                    Product
+                </div>
+                <div class="col-50">
+                    {{product.product_name}}
+                </div>
+            </div>
+            <div class="line"></div>
+            <div class="row">
+                <div class="col-50">
+                    Price
+                </div>
+                <div class="col-50">
+                    {{product.new_price}}
+                </div>
+            </div>
+            <div class="line"></div>
+            <div class="row hidden">
+                <div class="col-50">
+                    Description
+                </div>
+                <div class="col-50">
+					<ng-bind-html  ng-bind-html="product.product_description"></ng-bind-html>
+                </div>
+            </div>
+        </div>
+        
+        <div class="item item-divider mt-10"> Ask a Question? </div>
+        
+        <div class="row">
+            <div class="col col-80">
+                <div class="list card padding">
+                    <textarea class="new-post" placeholder="Your Questions.." ng-model="enquiryDetails.question" name="question" ></textarea>
+                </div>
+            </div>
+            <div class="col col-20">
+                <div class="mt-10 padding-rl-10">
+                    <button class="button button-calm button-small pull-right" ng-click="addProductEnquiry(enquiryDetails, product.product_id)">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-modal-view>

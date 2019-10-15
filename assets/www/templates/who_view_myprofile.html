@@ -1,0 +1,45 @@
+<ion-view view-title="Who viewed my profile">
+    <ion-header-bar class="bar-calm">
+        <div class="h1 title">Who Viewed My Profile</div>
+    </ion-header-bar>
+    <ion-content class='has-tabs-top'>
+        <ion-refresher on-refresh="viewUserViewers()"  spinner="ripple"></ion-refresher>
+        <div class="has-input item-input-inset bar bar-header disable-user-behavior">
+            <label class="item-input-wrapper">
+                <input type="search" placeholder="Search" ng-model="query" ng-change="profileOnChange(query)" ng-init="query = ''" >
+            </label>
+            <button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''">
+                Cancel 
+            </button>  
+        </div>         
+
+        <div class="list mb-0 border-bottom" ng-repeat="i in user_viewss| filter:query track by $index">
+            <div class="row" ng-if="i.user_name != null">
+                <div class="col col-20">
+                    <div class="view-pro-img">
+                        <img ng-src="{{i.img}}" ui-sref="app.friends_profile({friendid:i.friend_id})" ng-click="closeWhoViewMyFProfile()">
+                    </div>
+                </div>
+                <div class="col col-80 view-pro">
+                    <h2><a ui-sref="app.friends_profile({friendid:i.friend_id})" ng-click="closeWhoViewMyFProfile()">{{i.user_name}}</a></h2>
+                    <p ui-sref="app.friends_profile({friendid:i.friend_id})" ng-click="closeWhoViewMyFProfile()">{{i.company}}</p>
+                    <small class="text-size-12 text-color-dark text-bold">{{i.view_status}}</small>
+                    <div class="pull-right mt--20">
+                        <a class="button button-balanced button-small" ng-if="i.f_status == 'Connect'" ng-click="sendFriendRequest(i.friend_id, 'whoViewedMyProfile')"> <i class="icon ion-person-add"></i> </a>
+                        <a class="button button-calm button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="acceptFriendRequest(i.f_id, 'whoViewedMyProfile')"> <i class="icon ion-checkmark"></i> </a>
+                        <a class="button button-assertive button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="rejectFriendRequest(i.f_id, 'whoViewedMyProfile')"> <i class="icon ion-android-close"></i> </a>
+                        <a class="button button-req-sent button-small" ng-if="i.f_status == 'Request Sent'" ng-click="cancelFriendRequest(i.friend_id, 'whoViewedMyProfile')"> Pending </a>
+                        <!--<button class="button button-assertive button-small" ng-if="i.f_status == 'Disconnect'" ng-click="userDisconnect(i.friend_id, 'friendsProfile')"> <i class="icon ion-person-add"></i> {{i.f_status}} </button>-->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="padding text-center text-red" ng-if="user_viewss.length == 0">
+            <p>No more </p>
+            <p> <i class="icon ion-person-stalker text-size-30"></i> </p>
+        </div>
+        <ion-infinite-scroll ng-if="!noMoreUserViewersAvailable"  spinner="ripple" on-infinite="loadMoreUserViewers()" distance="1%"></ion-infinite-scroll> 
+    </ion-content>
+</ion-view>

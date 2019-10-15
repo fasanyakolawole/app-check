@@ -1,0 +1,353 @@
+<ion-view view-title="Edit Profile">
+    <ion-content class="has-tabs-top">
+        <ion-refresher on-refresh="viewUserDetailsForEdit_test()" pulling-icon="ion-chevron-up" spinner="ripple"></ion-refresher>
+        <div class="padding text-red text-center pb-0" ng-if="activation_active==2">
+			<div class="row no-padding">
+				<div class="col no-padding" >
+					<p> <i class="icon ion-information-circled text-red text-size-15"></i> Please Upgrade to get full access </p>
+					<a class="button button-assertive button-small" ui-sref="app.payment">Upgrade</a>
+				</div>
+			</div>
+		</div>
+        <form name="userForm" novalidate ng-submit="submit()">
+            <div class="list text-center profile-edit-photo-2">
+                <div class="profile-top profile-edit-photo">
+
+                    <img ng-if="activation_active == 1" src="{{userImagewithUrl}}" class="avatar-profile" alt="" ng-click="wallCameraOption(1, 'profile')">
+                     <img ng-if="activation_active == 2" src="{{userImagewithUrl}}" class="avatar-profile" alt="" >
+                </div>
+                <button ng-if="activation_active == 1" type="button" class="button button-calm button-small"  ng-click="wallCameraOption(1, 'profile')"> 
+                    <i class="icon ion-ios-camera"></i> Select Image
+                </button> 
+            </div>
+            <div class="item item-divider"> Basic Details <span ng-if="activation_active == 1" class="pull-right text-red"  ng-click="openEditBasicDetails()"> <i class="icon ion-ios-compose"></i> Edit </span> </div>
+            <div class="list list-inset profile-edit-form"> 
+                <label class="item item-input item-stacked-label">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Name</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.contact_name}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Company</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.company_name}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Email </p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.user_email}}</p>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <div class="item item-divider"> Contact Details <span ng-if="activation_active == 1" class="pull-right text-red"  ng-click="openEditContactDetails()"> <i class="icon ion-ios-compose"></i> Edit </span> </div>
+            <div class="list list-inset profile-edit-form"> 
+                <label class="item item-input item-stacked-label">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Address 1</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.user_address1}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Address 2</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.user_address2}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>County</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.country}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Town</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.town_city_name}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Postal Code</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.postcode}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Mobile</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.user_mobile}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Telephone</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.user_tel}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Website</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.website}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Partner ID</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.agent_id}}</p>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <div class="item item-divider"> Company Details <span ng-if="activation_active == 1" class="pull-right text-red" ng-click="openEditCompanyDetails(business_types, business_sectors)"> <i class="icon ion-ios-compose"></i> Edit </span> </div>
+            <div class="list list-inset profile-edit-form"> 
+                
+                <div style="display:none;">
+                    <label class="item item-input">
+                        <div class="row">
+                            <div class="col-33">
+                                <p>VAT No</p>
+                            </div>
+                            <div class="col-66 text-right">
+                                <p>{{user.vat_no}}</p>
+                            </div>
+                        </div>
+                    </label>
+                    <label class="item item-input">
+                        <div class="row">
+                            <div class="col-33">
+                                <p>Business Reg No</p>
+                            </div>
+                            <div class="col-66 text-right">
+                                <p>{{user.reg_no}}</p>
+                            </div>
+                        </div>
+                    </label>
+                    <label class="item item-input">
+                        <div class="row">
+                            <div class="col-33">
+                                <p>Number of Employee</p>
+                            </div>
+                            <div class="col-66 text-right">
+                                <p>{{user.emp_count}}</p>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Business Type</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.busin_type}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Business Sector</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.business_sector}}</p>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <div ng-if="activation_active == 1" class="item item-divider"> Privacy </div>
+            <div  ng-if="activation_active == 1" class="list list-inset">
+                <p>
+                    We respect your privacy, if you joined the Business Club for the purpose of saving money only, please 
+                    tick the boxes below.
+                </p>
+                <ul class="list">
+                    <ion-toggle  toggle-class="toggle-calm"
+                                ng-model="user.tbc_visible"
+                                ng-true-value="'1'"
+                                ng-false-value="'0'"
+                                ng-change="updateUser(user, 5)"                             >
+                        Private Account
+                    </ion-toggle>
+                    <ion-toggle toggle-class="toggle-calm"
+                                ng-model="user.publish_term"
+                                ng-true-value="'0'"
+                                ng-false-value="'1'"
+                                ng-change="updateUser(user, 5)"                                >
+                        Don't show my Ads
+                    </ion-toggle>
+                </ul>
+            </div>
+            <div class="item item-divider"> Personal Details <span ng-if="activation_active == 1" class="pull-right text-red"  ng-click="openEditPersonalDetails()"> <i class="icon ion-ios-compose"></i> Edit </span> </div>
+            <div class="list list-inset profile-edit-form">
+                <label class="item item-input">
+                    <div class="row">
+                        <div class="col-33">
+                            <p>Date of Birth</p>
+                        </div>
+                        <div class="col-66 text-right">
+                            <p>{{user.day_select}}-{{user.month_select}}-{{user.year_select}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item social-link-display">
+                    <div class="row row-no-padding">
+                        <div class="col">
+                            <p>Facebook</p>
+                        </div>
+                    </div>
+                    <div class="row row-no-padding">
+                        <div class="col">
+                            <p class="text-bold">{{user.user_fb}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item social-link-display">
+                    <div class="row row-no-padding">
+                        <div class="col">
+                            <p>Twitter</p>
+                        </div>
+                    </div>
+                    <div class="row row-no-padding">
+                        <div class="col">
+                            <p class="text-bold">{{user.user_tw}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item social-link-display">
+                    <div class="row row-no-padding">
+                        <div class="col">
+                            <p>Linkedin</p>
+                        </div>
+                    </div>
+                    <div class="row row-no-padding">
+                        <div class="col">
+                            <p class="text-bold">{{user.user_lin}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item social-link-display">
+                    <div class="row row-no-padding">
+                        <div class="col">
+                            <p>Instagram</p>
+                        </div>
+                    </div>
+                    <div class="row row-no-padding">
+                        <div class="col">
+                            <p class="text-bold">{{user.user_inst}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item social-link-display">
+                    <div class="row row-no-padding">
+                        <div class="col">
+                            <p>YouTube</p>
+                        </div>
+                    </div>
+                    <div class="row row-no-padding">
+                        <div class="col">
+                            <p class="text-bold">{{user.user_u_tube}}</p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row no-padding">
+                        <div class="col">
+                            <p><b>Key Words</b></p>
+                            <p class="white-space mt--15">
+                                {{user.key_words}}
+                            </p>
+                        </div>
+                    </div>
+                </label>
+                <label class="item item-input">
+                    <div class="row no-padding">
+                        <div class="col">
+                            <p><b>About My Business</b></p>
+                            <p class="white-space mt--15">
+                                {{user.abt_busin}}
+                            </p>
+                            <p class="text-gray" ng-hide="user.abt_busin">
+                                Please Add something
+                            </p>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <div class="item item-divider"> My Gallery </div>
+            <div class="row row-ruby">
+                <div class="col col-33 ad-show-images-box" ng-repeat="x in userImages">
+                    <img ng-src="{{x.file_name}}" class="ad-show-images"  ng-click="removeSelectedUserImage_tmp(x, product.product_id)">
+                    <div class="ad-img-remove">
+                        <i class="icon ion-close-round ad-img-remove" ng-click="removeSelectedUserImage_tmp(x, product.product_id)"></i>
+                    </div>
+                </div>
+                <div class="col col-33 ad-show-images-box" ng-repeat="i in imgCase">
+                    <img ng-src="{{i}}" class="ad-show-images"  ng-click="removeUploadImage_tmp_profile(i)">
+                    <div class="ad-img-remove">
+                        <i class="icon ion-close-round ad-img-remove" ng-click="removeUploadImage_tmp_profile(i)"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="list text-gray padding">
+                <p class="text-center">You can upload only 5 images</p>
+            </div>
+            <div class="row" ng-if="activation_active == 1">
+                <div class="col col-50" ng-if="(5 - (userImages.length + imgCase.length)) > 0">
+                    <a style="border: 1px solid #ddd;" class="button button-stable stable-border button-full button-small" ng-click="selectImages_tmp_profile((5 - (userImages.length + imgCase.length)), 'user_gallery')"><i class="icon ion-ios-camera"></i> Select Image </a>
+                </div>
+                <div class="col col-50">
+                    <a class="button button-calm button-full button-small" ng-click="updateUser(user, 5)">Save Changes</a>
+                </div>
+            </div>
+        </form>
+    </ion-content>
+</ion-view>

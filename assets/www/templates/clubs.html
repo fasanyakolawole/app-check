@@ -1,0 +1,165 @@
+<ion-view view-title="Clubs" >
+	<style>
+		.img{
+			
+			position: relative;
+			width: 100%;
+			height: 100%;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			z-index: 2;
+		}
+	</style>
+	<ion-content class="has-tabs-top">
+		<ion-refresher on-refresh="clubRefresh(var61)" pulling-icon="ion-chevron-up" spinner="ripple" ></ion-refresher>
+        
+        <div class="has-input item-input-inset bar bar-header disable-user-behavior" ng-if="var61 == 1">
+            <label class="item-input-wrapper">
+                <input type="text" placeholder="Search" ng-model="query" ng-change="getJoinedClubsSearch(query)" >
+                              
+            </label>
+            <button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''; getJoinedClubsSearch(query)">
+                Cancel 
+            </button>  
+        </div> 
+		
+        <div class="has-input item-input-inset bar bar-header disable-user-behavior" ng-if="var61 == 2">
+			<label class="item-input-wrapper">
+                <input type="text" placeholder="Search" ng-model="query" ng-change="getOurClubsSearch(query)" >
+                              
+			</label>
+			<button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''; getOurClubsSearch(query)">
+				Cancel 
+			</button>  
+		</div> 
+        
+        <div ng-if="var61 == 1"></div>
+        
+        <!-- {{var61}} -->
+        <div class="list mb-0 tab-button" ng-if="loginStatus === true">
+            <div class="row">
+                <div class="col col-50" >
+                    <button class="button button-full button-calm button-outline button-small" ng-click="TabChangeClubList(1)" ng-class="{'active': var61 == 1}">My Club</button>
+                </div>
+                <div class="col col-50" >
+                    <button class="button button-full button-calm button-outline button-small" ng-click="TabChangeClubList(2)" ng-class="{'active': var61 == 2}">All Clubs</button>
+                </div>
+            </div>
+        </div>
+
+        <!--My Club Tab-->
+        <div class="list list-border-top" ng-if="var61 == 1">
+        	
+        	<ion-list ng-if="my_club.length != 0">
+				<ion-item class="connection-list my-club-tab" on-hold="showClubAction(my_club.id)">
+					<div class="row no-padding">
+						<div class="col col-25 no-padding my-club" ui-sref="app.view_clubs({id:my_club.id})">
+							<div class="view-pro-img">
+								<div class="img">
+                                    <img src="{{my_club.clubLogo}}">
+                                </div>
+							</div>
+						</div>
+						<div class="col col-70 no-padding view-pro" ui-sref="app.view_clubs({id:my_club.id})">
+							<h2><b>{{my_club.group_name}}</b></h2>
+							<p>Club On: {{my_club.created_on}}</p>
+							<small class="text-size-12 text-color-dark text-bold">{{my_club.address}}</small>
+						</div>
+						<div class="col col-5 club-settings" ui-sref="app.view_clubs({id:my_club.id})">
+							<i class="icon ion-ios7-cog-outline"></i>
+						</div>
+                        
+                    </div>
+				</ion-item>
+			</ion-list> 
+
+            <div class="row" ng-if="my_club.length == 0">
+                <div class="col">
+                    <div class="text-center text-blue">
+                        <p>There is no clubs created</p>
+                        <p> <i class="icon ion-coffee text-size-30"></i> </p> 
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="having_joined_clubs == 'true'">
+            
+                <div class="row row-no-padding">
+                    <div class="col row-no-padding">
+                        <h4 class="text-center text-blue">Joined Clubs</h4>
+                    </div>
+                </div>
+                    
+                <ion-list>
+                    <ion-item class="connection-list joined-club" ng-repeat="i in all_joined_clubs| filter:sname track by $index">
+                        <div class="row no-padding" ui-sref="app.view_clubs({id:i.id})">
+                            <div class="col col-15 no-padding">
+                                <div class="view-pro-img">
+                                    <img src="{{i.clubLogo}}">
+                                </div>
+                            </div>
+                            <div class="col col-85 no-padding view-pro">
+                                <h2><b>{{i.group_name}}</b></h2>
+                                <p>Club On: {{i.created_on}}</p>
+                                <small class="text-size-12 text-color-dark text-bold">{{i.address}}</small>
+                            </div>
+                        </div>
+                    </ion-item>
+                </ion-list> 
+                
+                <div class="row">
+                    <div class="col">
+                        <div class="text-center text-blue" ng-if="all_joined_clubs_count == 0" >
+                            <p> There is no Joined Clubs</p>
+                            <p> <i class="icon ion-coffee text-size-30"></i> </p> 
+                        </div>
+                    </div>
+                </div>
+                
+                <ion-infinite-scroll ng-if="joinedGroupsMore" spinner="ripple" on-infinite="getAllJoinedGroupsMore()" distance="10%"></ion-infinite-scroll> 
+
+            </div>
+
+        </div>
+
+        <!--All Clubs Tab-->
+        <div class="list list-border-top all-clubs" ng-if="var61 == 2">
+
+            <ion-list>
+                <ion-item ng-repeat="i in all_our_clubs| filter:sname track by $index" on-hold="showAdAction(i.id)">
+                    <div class="row no-padding" ui-sref="app.view_clubs({id:i.id})">
+                        <div class="col col-15 no-padding">
+                            <div class="view-pro-img">
+                                <img src="{{i.clubLogo}}">
+                            </div>
+                        </div>
+                        <div class="col col-85 no-padding view-pro">
+                            <h2><b>{{i.group_name}}</b></h2>
+                            <p>Club On: {{i.created_on}}</p>
+                            <small class="text-size-12 text-color-dark text-bold">{{i.address}}</small>
+                        </div>
+                    </div>
+                </ion-item>
+            </ion-list> 
+            
+            <div class="row">
+                <div class="col">
+                    <div class="text-center text-blue" ng-if="all_our_clubs_count == 0" >
+                        <p> There is no All Clubs</p>
+                        <p> <i class="icon ion-coffee text-size-30"></i> </p> 
+                    </div>
+                </div>
+            </div>
+            
+            <ion-infinite-scroll ng-if="groupsMore" spinner="ripple" on-infinite="getAllOurGroupsMore()" distance="10%"></ion-infinite-scroll> 
+        </div>
+
+
+	</ion-content>
+	
+	<div ng-if="my_club.length == 0" class="button-fab calm-bg box-shadow" ng-click="openModalAddClub()"> 
+        <i class="icon ion-plus"></i>
+	</div>
+	
+</ion-view>

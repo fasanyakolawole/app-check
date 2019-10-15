@@ -1,0 +1,27 @@
+<ion-modal-view >
+    <ion-header-bar class="bar-calm">
+        <button class="button button-clear" ng-click="closeReport()">
+            <i class="icon ion-ios-arrow-left"></i> Back
+        </button>
+        <div class="h1 title">Report</div>
+    </ion-header-bar>
+    <ion-content>
+        <form name="report_a_post">
+            <div class="padding">
+                <h3 class="text-center">Help Us Understand What's Happening</h3>
+            </div>
+            
+            <div class="item item-divider"> Let us know why you want to report? </div>
+            
+            <div class="list card padding">
+                <textarea class="new-post" class="width-100" placeholder="Type here.." ng-model="report.comments" name="comments"></textarea>
+            </div>
+            
+            <div class="padding">
+                <div class="pull-right">
+                    <button class="button button-calm button-small" ng-click="doReport(report, report_this, sent_from)" ng-disabled="report_a_post.$invalid">Report Now</button>
+                </div>
+            </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

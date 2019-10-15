@@ -1,0 +1,158 @@
+<ion-side-menus enable-menu-with-back-views="false">
+	<ion-side-menu-content>
+		<ion-nav-bar class="bar-calm">
+			<ion-nav-back-button> Back
+			</ion-nav-back-button>
+
+			<ion-nav-buttons side="right">
+				<button class="button ink button-icon button-clear ion-grid" menu-toggle="right"></button>
+			</ion-nav-buttons>
+		</ion-nav-bar>
+		<ion-tabs class="tabs-icon-only tabs-color-active-calm tabs-light " ng-if="loginStatus">
+			<ion-tab title="" icon-off="ion-ios-home-outline" icon-on="ion-ios-home" href="#/app/dash">
+				<ion-nav-view name="home"></ion-nav-view>
+			</ion-tab>
+			<ion-tab title="" icon-off="ion-ios-location-outline" icon-on="ion-ios-location" ui-sref="app.localArea">
+				<ion-nav-view name="local_area"></ion-nav-view>
+			</ion-tab>
+			<ion-tab title="" icon-off="ion-ios-people-outline" icon-on="ion-ios-people" badge="friend_count" badge-style="badge-assertive"
+			    ui-sref="app.network">
+				<ion-nav-view name="network"></ion-nav-view>
+			</ion-tab>
+			<ion-tab title="" icon-off="ion-ios-cart-outline" icon-on="ion-ios-cart" ui-sref="app.myads">
+				<ion-nav-view name="myads"></ion-nav-view>
+			</ion-tab>
+
+			<ion-tab  title="" icon-off="ion-ios-infinite-outline" icon-on="ion-ios-infinite"  ui-sref="app.events" >
+				<ion-nav-view name="events"></ion-nav-view>
+			</ion-tab>
+
+			<ion-tab title="" icon-off="ion-ios-cart-outline" hidden=true icon-on="ion-ios-cart" ui-sref="app.ads">
+				<ion-nav-view name="ads"></ion-nav-view>
+			</ion-tab>
+			<ion-tab title="" icon-off="ion-ios-cart-outline" hidden=true icon-on="ion-ios-cart" ui-sref="app.myProfile">
+				<ion-nav-view name="myProfile"></ion-nav-view>
+			</ion-tab>
+			<ion-tab title="" icon-off="ion-ios7-bell-outline" badge="noti_count" icon-on="ion-ios7-bell" badge-style="badge-assertive"
+			    ui-sref="app.notification">
+				<ion-nav-view name="notifications"></ion-nav-view>
+			</ion-tab>
+
+			<ion-tab title="" icon-off="ion-ios-chatboxes-outline" ng-click="mesg()" icon-on="ion-ios-chatboxes" badge="msg_count" ui-sref="app.messaging"
+			    badge-style="badge-assertive">
+				<ion-nav-view name="messaging"></ion-nav-view>
+			</ion-tab>
+
+			<ion-tab title="" icon-off="ion-ios-cart-outline" hidden=true icon-on="ion-ios-cart" ui-sref="app.clubs">
+				<ion-nav-view name="clubs"></ion-nav-view>
+			</ion-tab>
+
+			<ion-tab title="" icon-off="ion-ios-cart-outline" hidden=true icon-on="ion-ios-cart" ui-sref="app.how_to">
+				<ion-nav-view name="how_to"></ion-nav-view>
+			</ion-tab>
+
+		</ion-tabs>
+		<ion-nav-view name="menuContent"></ion-nav-view>
+	</ion-side-menu-content>
+	<ion-side-menu side="right">
+		<div class="sidemenu-tob-box" ui-sref="app.myProfile" menu-close ng-if='loginStatus'>
+			<div class="row">
+				<div class="col col-25">
+					<div class="sidemenu-profile-icon" ui-sref="app.myProfile">
+
+						<img ng-src="{{userImagewithUrl}}">
+					</div>
+				</div>
+				<div class="col col-75">
+					<h3>{{appUserData.contact_name}}</h3>
+					<span class="text-gray">{{appUserData.company_name}}</span>
+				</div>
+			</div>
+		</div>
+		<div class="list">
+			<a class="item item-icon-left" menu-close href="#app/dash" ng-if="loginStatus">
+				<i class="icon ion-home"></i>
+				<h2>Home</h2>
+			</a>
+
+			<div ng-if="loginStatus === true" class="line-top home-b"></div>
+			<div ng-if="loginStatus === true" class="line-bot home-b"></div>
+
+			<a ng-if="loginStatus" class="item item-icon-left" menu-close ui-sref="app.myProfile">
+				<i class="icon ion-person"></i>
+				<h2>My profile</h2>
+			</a>
+
+			<div ng-if="!loginStatus" class="line-top"></div>
+			<div ng-if="!loginStatus" class="line-bot"></div>
+
+			<a ng-if="!loginStatus" class="item item-icon-left" menu-close ng-click="openRegister()">
+				<i class="icon ion-ios-compose"></i>
+				<h2>Register</h2>
+			</a>
+
+			<div ng-if="loginStatus === true" class="line-top"></div>
+			<div ng-if="loginStatus === true" class="line-bot"></div>
+
+			<a ng-if="loginStatus" class="item item-icon-left" menu-close ui-sref="app.clubs">
+				<i class="icon ion-aperture "></i>
+				<h2>Clubs</h2>
+			</a>
+
+			<div class="line-top"  ng-if="!loginStatus"></div>
+			<div class="line-bot"  ng-if="!loginStatus"></div>
+
+			<a class="item item-icon-left" menu-close href="#/app/about"  ng-if="!loginStatus">
+				<i class="icon ion-ios-help-outline"></i>
+				<h2>About</h2>
+			</a>
+
+			<div ng-if="!loginStatus" class="line-top"></div>
+			<div ng-if="!loginStatus" class="line-bot"></div>
+
+			<a class="item item-icon-left" menu-close href="#app/welcome" ng-if="!loginStatus">
+				<i class="icon ion-person"></i>
+				<h2>Login</h2>
+			</a>
+
+			<div class="line-top" ng-if="loginStatus === true"></div>
+			<div class="line-bot" ng-if="loginStatus === true"></div>
+            
+			<div ng-if="!loginStatus" class="line-top"></div>
+			<div ng-if="!loginStatus" class="line-bot"></div>
+
+			<a class="item item-icon-left" menu-close ui-sref="app.how_to">
+				<i class="icon ion-social-youtube-outline"></i>
+				<h2>How to</h2>
+			</a>
+
+			<!-- <div class="line-top" ng-if="loginStatus === true"></div>
+			<div class="line-bot" ng-if="loginStatus === true"></div>
+
+			<a ng-if="loginStatus" class="item item-icon-left" menu-close href="#app/mobtarrifs">
+				<i class="icon ion-ios-calculator"></i>
+				<h2>Tariffs</h2>
+			</a> -->
+
+			<div class="line-top" ng-if="loginStatus === true"></div>
+			<div class="line-bot" ng-if="loginStatus === true"></div>
+
+
+			<div ng-if="!userApiKey" class="line-top"></div>
+			<div ng-if="!userApiKey" class="line-bot"></div>
+
+			<a ng-if="loginStatus" class="item item-icon-left" menu-close href="#app/appsettings">
+				<i class="icon ion-gear-b"></i>
+				<h2>Settings</h2>
+			</a>
+
+			<div class="line-top" ng-if="loginStatus === true"></div>
+			<div class="line-bot" ng-if="loginStatus === true"></div>
+
+			<a ng-if="loginStatus" class="item item-icon-left" ng-click="signOut()">
+				<i class="icon ion-log-out"></i>
+				<h2>Logout</h2>
+			</a>
+		</div>
+	</ion-side-menu>
+</ion-side-menus>

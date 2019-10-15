@@ -1,0 +1,97 @@
+<ion-view view-title="Enquiry">
+	<ion-content class="has-tabs-top">
+		<ion-refresher on-refresh="viewMemberEnquiry()"  spinner="ripple"></ion-refresher>
+		<div class="padding">
+			<h3 class="text-center">{{productDetails.product_name}} {{message}}</h3>
+		</div>
+		<ion-slide-box on-slide-changed="slideHasChanged($index)">
+			<ion-slide ng-repeat="i in productDetails.topic_images">
+				<div class="img-view-ad">
+					<img ng-src="{{i.image}}">
+				</div>
+			</ion-slide>
+		</ion-slide-box>
+		
+		<div class="item">
+			<p ng-if="!productDetails.external_enquiry">Customer Name : <a ui-sref="app.friends_profile({friendid:productDetails.customer_id})" >{{productDetails.customer_name}} </a></p>
+			<p ng-if="productDetails.external_enquiry">Customer Name : {{productDetails.customer_name}}</p>
+			<p>Price: {{productDetails.basic_price}}</p>
+			<!-- <p>Telephone No : <a ng-click="callFriend('{{productDetails.customer_tel}}')">{{productDetails.customer_tel}}</a></p> -->
+			<p>Telephone No : {{productDetails.customer_tel}}</p>
+			<p ng-if="productDetails.external_enquiry">Email : {{productDetails.customer_email}} </p>
+			<p>Note: {{productDetails.question_asked}}</p>
+            <p ng-if="productDetails.external_enquiry"><small class="enquiery-badge assertive-bg">External</small></p>
+		</div>
+		
+		<div class="row">
+			<div class="col" >
+				<div class="list" ng-if="order_chat_list_count > 0">
+					<div ng-repeat="i in order_chat_list">
+						<div ng-if="i.chat_status == 'other'" class="row" >
+							<div class="col col-15">
+								<div class="chat-profile-pic">
+									<img ng-src="{{i.user_image}}" ui-sref="app.friends_profile">
+								</div>
+							</div> 
+							<div class="col col-85">
+								<div class="chat-bubble left">
+									<div class="message-detail">
+										<span><b>{{i.contact_name}}</b></span>,
+										<span class="text-size-12">{{i.send_time}}</span>
+									</div>
+									<div class="message">
+										{{i.message_body}}
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div ng-if="i.chat_status == 'me'" class="row">
+							<div class="col col-85">
+								<div class="chat-bubble right">
+									<div class="message-detail">
+										<span><b>Me</b></span>
+										<span class="text-size-12">{{i.send_time}}</span>
+									</div>
+									<div class="message">
+										{{i.message_body}}
+									</div>
+								</div>
+							</div>
+							<div class="col col-15">
+								<div class="chat-profile-pic">
+									<img ng-src="{{i.user_image}}">
+								</div>
+							</div> 
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="list" ng-if="tmp_order_chat_list > 0">
+					<div ng-repeat="i in tmp_order_chat_list">
+						<p>{{i.contact_name}}</p><br>
+						<p>{{i.message_body}}</p><br>
+						<p>{{i.send_time}}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<form name="formAskEnquiryQuestions" ng-if="!productDetails.external_enquiry">
+			<div class="row">
+				<div class="col">
+					<div class="list list-inset">
+						<label class="item item-input chat-textarea">
+							<textarea class="new-post" placeholder="Your Questions.." ng-model="enquiryDetails.question" name="question" required></textarea>
+						</label>
+					</div>
+					<div class="mt-10 padding-rl-10">
+						<button class="button button-calm button-small pull-right" ng-click="askEnquiryQuestions(enquiryDetails); enquiryDetails.question=''" ng-disabled="formAskEnquiryQuestions.$invalid">Ask Question</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</ion-content>
+</ion-view>

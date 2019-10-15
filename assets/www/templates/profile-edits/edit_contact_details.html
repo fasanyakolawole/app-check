@@ -1,0 +1,84 @@
+<ion-modal-view  >
+    <ion-header-bar class="bar-calm">
+        <button class="button button-clear" ng-click="closeEditContactDetails()">
+            <i class="icon ion-ios-arrow-left"></i> Back
+        </button>
+        <div class="h1 title">Edit Contact Details</div>
+        <button class="button button-assertive button-small" type="submit" ng-click="updateUser(user,3)"> save </button>
+    </ion-header-bar>
+    <ion-content>
+        <form>
+            <div class="list list-inset">
+                <div ng-class="{ 'has-error' : userForm.user_address1.$invalid && !userForm.user_address1.$pristine }">
+                    <label class="item item-input item-stacked-label">
+                        <span class="input-label">Address 1</span>
+                        <input type="text" placeholder="Address 1" ng-model="user.user_address1" name="user_address1" required>
+                        <p ng-show="userForm.user_address1.$invalid" class="text-red">Address 1 is required.</p>
+                    </label>
+                </div>
+                <div ng-class="{ 'has-error' : userForm.user_address2.$invalid && !userForm.user_address2.$pristine }">
+                    <label class="item item-input item-stacked-label">
+                        <span class="input-label">Address 2</span>
+                        <input type="text" placeholder="Address 2" ng-model="user.user_address2" name="user_address2">
+                    </label>
+                </div>
+                
+                <label class="item item-input item-stacked-label item-select">
+                    <div class="input-label">
+                        Select County
+                    </div>
+                    <select data-ng-model="user.country" name="country" ng-change="getTown(user.country)" required>
+                        <option ng-selected= "{{x.County == user.country}}" ng-repeat="x in counties track by $index" value="{{x.County}}" ng-if="$index > 0">{{x.County}}</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </label>
+                <p ng-show="userForm.country.$invalid" class="text-red">County is required.</p>
+                <label class="item item-input item-stacked-label item-select">
+                    <div class="input-label">
+                        Select Town
+                    </div>
+                    <select data-ng-model="user.town_city" name="town_city">
+                        <option ng-repeat="x in towns track by $index" value="{{x.id}}">{{x.Town}}</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </label>
+                <p ng-show="userForm.town_city.$invalid" class="text-red">Town is required.</p>
+                <div ng-class="{ 'has-error' : userForm.postcode.$invalid && !userForm.postcode.$pristine }">
+                    <label class="item item-input item-stacked-label">
+                        <span class="input-label">Postal Code</span>
+                        <input type="text" placeholder="Postal Code" ng-model="user.postcode" name="postcode" required>
+                        <p ng-show="userForm.postcode.$invalid" class="text-red">Post code is required.</p>
+                    </label>
+                </div> 
+                <div ng-class="{ 'has-error' : userForm.user_mobile.$invalid && !userForm.user_mobile.$pristine }">
+                    <label class="item item-input item-stacked-label">
+                        <span class="input-label">Mobile Number</span>
+                        <input type="text" placeholder="Mobile Number" ng-keydown="$event.keyCode != 32 ? $event:$event.preventDefault()" ng-model="user.user_mobile" name="user_mobile" maxlength="11">
+                    </label>
+                </div>
+                
+                <div ng-class="{ 'has-error' : userForm.user_tel.$invalid && !userForm.user_tel.$pristine }">
+                    <label class="item item-input item-stacked-label">
+                        <span class="input-label">Telephone Number</span>
+                        <input type="text" placeholder="Contact Number" ng-keydown="$event.keyCode != 32 ? $event:$event.preventDefault()" ng-model="user.user_tel" name="user_tel" maxlength="11">
+                    </label>
+                </div>
+                
+                <div ng-class="{ 'has-error' : userForm.website.$invalid && !userForm.website.$pristine }">
+                    <label class="item item-input item-stacked-label">
+                        <span class="input-label">Website</span>
+                        <input type="text" placeholder="Website" ng-model="user.website" name="website">
+                    </label>
+                </div>
+                
+                <div ng-class="{ 'has-error' : userForm.agent_id.$invalid && !userForm.agent_id.$pristine }">
+                    <label class="item item-input item-stacked-label">
+                        <span class="input-label">Partner ID</span>
+                        <input type="text" placeholder="Partner ID" ng-model="user.agent_id" name="agent_id">
+                    </label>
+                </div> 
+            </div>
+        </form>
+        
+    </ion-content>
+</ion-modal-view>

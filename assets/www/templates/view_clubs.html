@@ -1,0 +1,462 @@
+<ion-view view-title="{{clubDetails.group_name}}">
+    <ion-content class="has-tabs-top viewclub" overflow-scroll="true">
+        <ion-refresher on-refresh="doRefresh(clubDetails.id)" pulling-icon="ion-chevron-up" spinner="ripple"></ion-refresher>
+        
+        <div class="list card profile-top text-center">
+            <div class="item item-text-wrap club-card">
+                <img ng-src="{{clubDetails.clubLogo}}" class="avatar-profile" ng-click="clubImagePopUp(clubDetails.img_url_pro, clubDetails.image)">
+                <h2 class="font-thin">
+                    <b>{{clubDetails.group_name}}</b>
+                </h2>
+                <p>Created On {{clubDetails.created_on}}</p>
+                <p class="text-muted">{{clubDetails.address}}</p>
+                <p ng-if="clubDetails.club_user_type == 'admin'" class="text-muted">Club Status: <span class="{{clubDetails.club_approval_lbl}}">{{clubDetails.approval}}</span></p>
+                
+                <!-- User is the Admin -->
+                
+                <div ng-if="clubDetails.club_user_type == 'admin'">
+                    <div class="row" ng-if="clubDetails.approval == 'Pending'">
+                        <div class="col-50 col col-offset-25">
+                            <button class="button button-calm button-small button-full" ng-click="openModalAddClub({{clubDetails.id}})">     
+                                Edit Club
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row" ng-if="clubDetails.approval == 'Approved'">
+                        <div class="col-33 col">
+                            <button class="button button-calm button-small button-full" ng-click="openModalAddClub({{clubDetails.id}})">     
+                                Edit Club
+                            </button>
+                        </div>
+                        <div class="col-33 col">
+                            <button class="button button-balanced button-small button-full" ng-click="openModalCreateNewEvent({{clubDetails}})">
+                                <i class="icon ion-plus"></i> Event 
+                            </button>
+                        </div>
+                        <div class="col-33 col">
+                            <button class="button button-calm button-small button-full" ng-click="openModalAddClubMember({{clubDetails.id}})">    
+                                <i class="icon ion-plus"></i> Members
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- User is a member -->
+            <div class="padding" ng-if="clubDetails.club_user_type == 'member'">
+                <button class="button button-assertive button-small" ng-click="exitClubConfirmation()">
+                    <i class="icon ion-person-add"></i> Exit Group </button>
+            </div>
+            
+            <!-- User has received a request -->
+            <div class="padding" ng-if="clubDetails.club_user_type == 'request_came'">
+                <button class="button button-balanced button-small" ng-click="accept_reject_club_request('accept')">
+                    <i class="icon ion-person-add"></i> Accept </button>
+                <button class="button button-assertive button-small" ng-click="accept_reject_club_request('reject')">
+                    <i class="icon ion-person-add"></i> Reject </button>
+            </div>
+            
+            <!-- User has sent a request -->
+            <div class="padding" ng-if="clubDetails.club_user_type == 'request_sent'">
+                <button class="button button-calm button-small" ng-click="cancelClubRequest()">
+                    <i class="icon ion-person-add"></i> Request Sent </button>
+            </div>
+            
+            <!-- User is an Outsider -->
+            <div class="padding" ng-if="clubDetails.club_user_type == 'outsider'">
+                <button class="button button-calm button-small" ng-click="joinClub()">
+                    <i class="icon ion-person-add"></i> Join Club </button>
+            </div>
+        </div>
+        
+        <div class="list padding mb-0 pb-0" ng-if="clubDetails.have_requests">
+            <div class="item">
+                <i class="icon ion-person-stalker"></i> Requests
+                <span class="text-size-12">({{clubDetails.no_of_requests}})</span>
+                <div class="profile-connections">
+                    <div>
+
+                        <ion-list>
+                            <ion-item class="conn-pro-box" ng-repeat="y in clubDetails.req_member_details">
+                                <div class="conn-img-box" ui-sref="app.myProfile">
+                                    <a href="#" class="connection-remove-btn hidden">
+                                        <i class="icon ion-close-round"></i>
+                                    </a>
+                                    <img src="{{y.user_image}}">
+                                </div>
+                                <div class="club-connection-name">{{y.member_name}}</div>
+                                <div class="club-connection-response" ng-click="club_connection_response({{y.member_id}})">Response</div>
+                            </ion-item>
+                        </ion-list>
+                    </div>
+                </div>
+            </div>
+            <div class="item see-all text-center">
+                <button class="button button-clear button-calm button-small" ng-click="openModalAllClubRequests()">
+                    <b>See All Requests</b>
+                </button>
+            </div>
+        </div>
+
+        <div class="mb-10"></div>
+        <div class="row padding-rl-10 profile-tab">
+            <div class="col-20 padding-right-2">
+                <a class="button button-small button-full button-calm button-outline" ng-click="TabChangeViewClub(1)" ng-class="{'active': vars1 == 1}">
+                    <i class="icon ion-calendar"></i>
+                </a>
+            </div>
+            <div class="col-20 padding-left-2">
+                <a class="button button-small button-full button-calm button-outline" ng-click="TabChangeViewClub(2)" ng-class="{'active': vars1 == 2}">
+                    <i class="icon ion-person"></i>
+                </a>
+            </div>
+            <div class="col-20 padding-left-2 padding-right-2">
+                <a class="button button-small button-full button-calm button-outline" ng-click="TabChangeViewClub(3)" ng-class="{'active': vars1 == 3}">
+                    <i class="icon ion-alert"></i>
+                </a>
+            </div>
+            <div class="col-20 padding-left-2">
+                <a class="button button-small button-full button-calm button-outline" ng-click="TabChangeViewClub(4)" ng-class="{'active': vars1 == 4}">
+                    <i class="icon ion-speakerphone"></i>
+                </a>
+            </div>
+
+            <div class="col-20 padding-left-2">
+                <a class="button button-small button-full button-calm button-outline" ng-click="TabChangeViewClub(5)" ng-class="{'active': vars1 == 5}">
+                    <i class="icon ion-images"></i>
+                </a>
+            </div>
+        </div>
+        <div class="mb-10"></div>
+        <div class="friends-profile-post" ng-if="vars1 == 1">
+            <ion-list class="">
+                <ion-item class="connection-list" ng-repeat="x in all_events">
+                    <div class="row no-padding" on-hold="clubDetails.club_user_type == 'admin'?showEventAction(x.id):''">
+                        <div class="col col-15 no-padding">
+                            <div class="view-pro-img">
+                                <div class="img">
+                                    <img src="{{x.event_image}}" ui-sref="app.view_club_event({id:x.id})">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-85 no-padding view-pro">
+                            <h2>
+                                <a ui-sref="app.view_club_event({id:x.id})">{{x.event_title}}</a>
+                            </h2>
+                            <p>{{x.event_datetime}}</p>
+                            <small class="text-size-12 text-color-dark text-bold" ui-sref="app.view_club_event({id:x.id})">{{x.address}}</small>
+                        </div>
+                    </div>
+
+                    <ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareEvents(x.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareEvents(x.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-balanced" ng-click="whatsappShareEvents(x.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-positive" ng-click="sendSMSEvents(x.id)"> <i class="icon ion-ios-email"></i> </ion-option-button>    
+                    <ion-option-button class="drag-button button-outline button-share" ng-click="moreShocialShareEvents(x.id, x.event_title, x.full_location, x.event_image, null)"> <i class="icon ion-share"></i> </ion-option-button>
+                </ion-item>
+            </ion-list>
+
+            <div class="row">
+                <div class="col">
+                    <div class="text-center text-blue" ng-if="all_events.length == 0">
+                        <p>No Events Available</p>
+                        <p> <i class="icon ion-coffee text-size-30"></i> </p> 
+                    </div>
+                </div>
+            </div>
+
+            <ion-infinite-scroll ng-if="eventsMore" spinner="ripple" on-infinite="getAllClubEventsMore()" distance="10%"></ion-infinite-scroll>
+
+        </div>
+        <div class="about-tab" ng-if="vars1 == 2">
+
+            <div ng-if="clubDetails.club_user_type == 'admin'">
+
+                <div ng-if="clubDetails.requested_members_count > 0">
+
+                    <div class="row padding-rl-10 profile-tab">
+                        <div class="col-50 padding-left-2">
+                            <a class="button button-small button-full button-calm button-outline" ng-click="TabChangeViewMembers(1)" ng-class="{'active': varm1 == 1}">
+                                Members
+                            </a>
+                        </div>
+
+                        <div class="col-50 padding-left-2">
+                            <a class="button button-small button-full button-calm button-outline" ng-click="TabChangeViewMembers(2)" ng-class="{'active': varm1 == 2}">
+                                Sent Invitations
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="about-tab" ng-if="varm1 == 1">
+
+                        <ion-list class="">
+                            <ion-item class="connection-list" ng-repeat="z in all_members">
+                                <div class="row no-padding">
+                                    <div class="col col-15 no-padding">
+                                        <div class="view-pro-img">
+                                            <img src="{{z.user_image}}" ui-sref="app.friends_profile({friendid:z.id})">
+                                        </div>
+                                    </div>
+                                    <div class="col col-85 no-padding view-pro">
+                                        <h2>
+                                            <a ui-sref="app.friends_profile({friendid:z.id})">{{z.member_name}}</a>
+                                        </h2>
+                                        <p ui-sref="app.friends_profile({friendid:z.id})">{{z.member_company}}</p>
+                                        <small class="text-size-12 text-color-dark text-bold" ui-sref="app.friends_profile({friendid:z.id})">{{z.address}}</small>
+                                        
+                                        <div ng-if="clubDetails.club_user_type == 'admin' && clubDetails.admin_id != z.id">
+
+                                            <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'member'">
+                                                <a class="button button-assertive button-small" ng-click="removeGroupMember(z.id)">
+                                                    <i class="icon ion-close-round"></i>
+                                                </a>
+                                            </div>
+
+                                            <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'request_sent'">
+                                                <a class="button button-assertive button-small" ng-click="removeGroupMemberRequest(z.id)">
+                                                    <i class="icon ion-close-round"></i>
+                                                </a>
+                                            </div>
+
+                                            <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'request_received'">
+                                                <a class="button button-calm button-small" ng-click="accept_reject_club_member('accept', z.id)"> <i class="icon ion-checkmark"></i> </a>
+                                            
+                                                <a class="button button-assertive button-small" ng-click="accept_reject_club_member('reject', z.id)"> <i class="icon ion-android-close"></i> </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </ion-item>
+                        </ion-list>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="text-center text-blue" ng-if="all_members.length == 0">
+                                    <p>No Members Available</p>
+                                    <p> <i class="icon ion-person-stalker text-size-30"></i> </p> 
+                                </div>
+                            </div>
+                        </div>
+
+                        <ion-infinite-scroll ng-if="membersMore" spinner="ripple" on-infinite="getAllClubMembersMore()" distance="10%"></ion-infinite-scroll>   
+
+                    </div>
+
+                    <div class="about-tab" ng-if="varm1 == 2">
+                        
+                        <ion-list class="">
+                            <ion-item class="connection-list" ng-repeat="z in requested_members">
+                                <div class="row no-padding">
+                                    <div class="col col-15 no-padding">
+                                        <div class="view-pro-img">
+                                            <img src="{{z.user_image}}" ui-sref="app.friends_profile({friendid:z.id})">
+                                        </div>
+                                    </div>
+                                    <div class="col col-85 no-padding view-pro">
+                                        <h2>
+                                            <a ui-sref="app.friends_profile({friendid:z.id})">{{z.member_name}}</a>
+                                        </h2>
+                                        <p ui-sref="app.friends_profile({friendid:z.id})">{{z.member_company}}</p>
+                                        <small class="text-size-12 text-color-dark text-bold" ui-sref="app.friends_profile({friendid:z.id})">{{z.address}}</small>
+                                        
+                                        <div ng-if="clubDetails.club_user_type == 'admin' && clubDetails.admin_id != z.id">
+
+                                            <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'member'">
+                                                <a class="button button-assertive button-small" ng-click="removeGroupMember(z.id)">
+                                                    <i class="icon ion-close-round"></i>
+                                                </a>
+                                            </div>
+
+                                            <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'request_sent'">
+                                                <a class="button button-assertive button-small" ng-click="removeGroupMemberRequest(z.id)">
+                                                    <i class="icon ion-close-round"></i>
+                                                </a>
+                                            </div>
+
+                                            <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'request_received'">
+                                                <a class="button button-calm button-small" ng-click="accept_reject_club_member('accept', z.id)"> <i class="icon ion-checkmark"></i> </a>
+                                            
+                                                <a class="button button-assertive button-small" ng-click="accept_reject_club_member('reject', z.id)"> <i class="icon ion-android-close"></i> </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </ion-item>
+                        </ion-list>
+
+                        <ion-infinite-scroll ng-if="requestedmembersMore" spinner="ripple" on-infinite="getAllClubRequestedMembersMore()" distance="10%"></ion-infinite-scroll>
+
+                    </div>
+
+                </div>
+
+                <div ng-if="clubDetails.requested_members_count == 0">
+
+                    <ion-list class="">
+                        <ion-item class="connection-list" ng-repeat="z in all_members">
+                            <div class="row no-padding">
+                                <div class="col col-15 no-padding">
+                                    <div class="view-pro-img">
+                                        <img src="{{z.user_image}}" ui-sref="app.friends_profile({friendid:z.id})">
+                                    </div>
+                                </div>
+                                <div class="col col-85 no-padding view-pro">
+                                    <h2>
+                                        <a ui-sref="app.friends_profile({friendid:z.id})">{{z.member_name}}</a>
+                                    </h2>
+                                    <p ui-sref="app.friends_profile({friendid:z.id})">{{z.member_company}}</p>
+                                    <small class="text-size-12 text-color-dark text-bold" ui-sref="app.friends_profile({friendid:z.id})">{{z.address}}</small>
+                                    
+                                    <div ng-if="clubDetails.club_user_type == 'admin' && clubDetails.admin_id != z.id">
+
+                                        <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'member'">
+                                            <a class="button button-assertive button-small" ng-click="removeGroupMember(z.id)">
+                                                <i class="icon ion-close-round"></i>
+                                            </a>
+                                        </div>
+
+                                        <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'request_sent'">
+                                            <a class="button button-assertive button-small" ng-click="removeGroupMemberRequest(z.id)">
+                                                <i class="icon ion-close-round"></i>
+                                            </a>
+                                        </div>
+
+                                        <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'request_received'">
+                                            <a class="button button-calm button-small" ng-click="accept_reject_club_member('accept', z.id)"> <i class="icon ion-checkmark"></i> </a>
+                                        
+                                            <a class="button button-assertive button-small" ng-click="accept_reject_club_member('reject', z.id)"> <i class="icon ion-android-close"></i> </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ion-item>
+                    </ion-list>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="text-center text-blue" ng-if="all_members.length == 0">
+                                <p>No Members Available</p>
+                                <p> <i class="icon ion-person-stalker text-size-30"></i> </p> 
+                            </div>
+                        </div>
+                    </div>
+
+                    <ion-infinite-scroll ng-if="membersMore" spinner="ripple" on-infinite="getAllClubMembersMore()" distance="10%"></ion-infinite-scroll>   
+
+                </div>
+            </div>
+
+            <div ng-if="clubDetails.club_user_type != 'admin'">
+                <ion-list class="">
+                    <ion-item class="connection-list" ng-repeat="z in all_members">
+                        <div class="row no-padding">
+                            <div class="col col-15 no-padding">
+                                <div class="view-pro-img">
+                                    <img src="{{z.user_image}}" ui-sref="app.friends_profile({friendid:z.id})">
+                                </div>
+                            </div>
+                            <div class="col col-85 no-padding view-pro">
+                                <h2>
+                                    <a ui-sref="app.friends_profile({friendid:z.id})">{{z.member_name}}</a>
+                                </h2>
+                                <p ui-sref="app.friends_profile({friendid:z.id})">{{z.member_company}}</p>
+                                <small class="text-size-12 text-color-dark text-bold" ui-sref="app.friends_profile({friendid:z.id})">{{z.address}}</small>
+                                
+                                <div ng-if="clubDetails.club_user_type == 'admin' && clubDetails.admin_id != z.id">
+
+                                    <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'member'">
+                                        <a class="button button-assertive button-small" ng-click="removeGroupMember(z.id)">
+                                            <i class="icon ion-close-round"></i>
+                                        </a>
+                                    </div>
+
+                                    <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'request_sent'">
+                                        <a class="button button-assertive button-small" ng-click="removeGroupMemberRequest(z.id)">
+                                            <i class="icon ion-close-round"></i>
+                                        </a>
+                                    </div>
+
+                                    <div class="pull-right mt--50 disconnect-friends" ng-if="z.member_type == 'request_received'">
+                                        <a class="button button-calm button-small" ng-click="accept_reject_club_member('accept', z.id)"> <i class="icon ion-checkmark"></i> </a>
+                                    
+                                        <a class="button button-assertive button-small" ng-click="accept_reject_club_member('reject', z.id)"> <i class="icon ion-android-close"></i> </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </ion-item>
+                </ion-list>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="text-center text-blue" ng-if="all_members.length == 0">
+                            <p>No Members Available</p>
+                            <p> <i class="icon ion-person-stalker text-size-30"></i> </p> 
+                        </div>
+                    </div>
+                </div>
+
+                <ion-infinite-scroll ng-if="membersMore" spinner="ripple" on-infinite="getAllClubMembersMore()" distance="10%"></ion-infinite-scroll>   
+            </div>
+
+        </div>
+        <div class="about-tab" ng-if="vars1 == 3">
+
+            <p class="white-space mt--20 padding">
+                {{clubDetails.group_desc}}
+            </p>
+        </div>
+        <div class="list list-border-top  mt-10" ng-if="vars1 == 4">
+            <ion-list ng-repeat="i in member_ads">
+                <ion-item class="ads-desc item item-thumbnail-left border-radius-0" ui-sref="app.myadsingle({id:i.id})">
+                    <img ng-src="{{i.images}}">
+                    <div class="row no-padding">
+                        <div class="col col-80 no-padding no-fnt-wgt">
+                            <h2>
+                                <b>{{i.product_name}}</b>
+                            </h2>
+                            <p>{{i.product_small_desc}}</p>
+                            <div class="row row-no-padding">
+                                <div class="col col-50 text-green" ng-if="i.price != '0.00'">
+                                    Now  £ {{i.price| number : 2}} 
+                                </div>
+                                <div class="col col-50 text-right" ng-if="i.discount_prices > 0">
+                                    <span class="reg-price"> {{i.basic_price}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="i.discount_prices != 0" class="col col-20 no-padding">
+                            <div class="offer-box">
+                                <span class="offer-text"> {{i.discount_prices}}%
+                                    <br> OFF</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </ion-item>
+            </ion-list>
+            <div class="padding text-center text-blue" ng-show="!member_ads.length">
+                <p>No Products Available</p>
+                <p>
+                    <i class="icon ion-ios-cart-outline text-size-30"></i>
+                </p>
+            </div>
+
+            <ion-infinite-scroll ng-if="adsMore" spinner="ripple" on-infinite="getAllMemberAdsMore()" distance="10%"></ion-infinite-scroll>
+
+        </div>
+        <div class="list list-border-top  mt-10" ng-if="vars1 == 5">
+            <div class="club-gallery-wrp">
+                <div class="club-images" ng-repeat="x in clubDetails.group_gallery" ng-if="clubDetails.group_gallery != 'false'">
+                    <img src="{{x.file_name}}" ng-click="clubImageView(x.file_name)">
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

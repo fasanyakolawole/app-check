@@ -1,0 +1,60 @@
+<ion-view view-title="TBC Payment">
+	<ion-content class="has-tabs-top" overflow-scroll="true">
+		<h3 class="text-center mt-10">Account Information </h3>
+		
+		<div class="row">
+			<div class="col col-25 col-offset-33">
+				<img ng-src="{{userImagewithUrl}}" class="img-responsive img-acc-upgrade"> <br>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col col-50">
+				<p> Contact Name </p>
+				<p> Business Name </p>
+				<p> Contact No </p>
+				<p> Email Address </p>
+				<p> Joined Date </p>
+				<p> Account upgrade Amounta </p>
+			</div>
+			<div class="col col-50">
+				<p> {{appUserData.contact_name}} </p>
+				<p> {{appUserData.company_name}} </p>
+				<p> {{appUserData.user_tel}} </p>
+				<p> {{appUserData.user_email}} </p>
+				<p> {{appUserData.created_on}} </p>
+				<p> {{appUserData.amount}}  </p>
+			</div>
+		</div>  
+		<h1>{{invalid}}</h1>
+		<h3 class="text-center mt-10"> Payment Details </h3>
+		<div class="list padding">
+			<label class="item item-input item-floating-label">
+				<span class="input-label">CARD NUMBER</span>
+				<input ng-model="card.card_number" type="number"  maxlength="20" size="24" placeholder="Valid Card Number" required >
+			</label>
+			<label class="item item-input">
+				<span class="input-label">EXPIRATION DATE</span>
+				<input ng-model="card.mm" type="number" size="2"  maxlength="2" placeholder="MM"  required> <span style="margin-left: -126px; margin-right: 20px; margin-top: 4px;">/</span> <input type="number" maxlength="2" size="2"   ng-model="card.yy" id="cardNumber"  placeholder="YY"  required>
+			</label>
+			<label class="item item-input item-floating-label">
+				<span class="input-label">CVV CODE</span>
+				<input type="number"  ng-model="card.cvc"   placeholder="CVC" required>
+			</label>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="padding">
+					<p> Payment Amount - {{appUserData.amount}} </p>
+					<p> Description - Membership Upgradation </p>
+					<p> Membership Type - Paid </p>
+					<p> Payment Date - {{appUserData.today}} </p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col col-33 col-offset-33">
+				<button class="button button-calm button-block button-small" ng-click="checkPayment(card)">Pay  {{appUserData.amount}}</button>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

@@ -1,0 +1,191 @@
+<ion-view view-title="{{eventDetails.event_title}}" >
+    <ion-content class="has-tabs-top viewclubevent" overflow-scroll="true">
+        <ion-refresher on-refresh="viewEventDetails()" pulling-icon="ion-chevron-up" spinner="ripple" ></ion-refresher>
+        
+        <div class="list card text-center">
+            <div class="padding">
+                
+                
+<!--
+                <ion-slide-box  options="options" slider="data.slider">
+                    <ion-slide ng-repeat="i in eventDetails.event_gallery">
+                        <div class="img-view-ad">
+                            <img ng-src="{{i.file_name}}" ng-click="adsImageView(i.file_name)">
+                        </div>
+                    </ion-slide>
+                </ion-slide-box>
+-->
+                
+                <ion-slide-box  options="options" slider="data.slider">
+                    <ion-slide ng-repeat="i in eventDetails.event_gallery">
+                        <div class="img-event-ad">
+                            <img src="{{i.file_name}}" ng-click="viewEventImage(i.file_name)">
+                        </div>
+                    </ion-slide>
+                </ion-slide-box>
+                
+<!--
+                <ion-slide-box  options="options" slider="data.slider">
+                    <ion-slide>
+                        <div class="img-view-ad">
+                            <img src="http://24eastmain.com/wp-content/uploads/2017/08/test.jpg">
+                        </div>
+                    </ion-slide>
+                    <ion-slide>
+                        <div class="img-view-ad">
+                            <img src="http://24eastmain.com/wp-content/uploads/2017/08/test.jpg">
+                        </div>
+                    </ion-slide>
+                </ion-slide-box>
+-->
+                
+<!--
+                <div class="row" ng-repeat="i in eventDetails.event_gallery" >
+                    <img ng-src="{{i.file_name}}" ng-click="adsImageView(i.file_name)">
+                </div>
+-->
+<!--
+                <div class="img-view-ad">
+                    <img ng-src="{{eventDetails.event_gallery[0].file_name}}" ng-click="adsImageView(i.file_name)">
+                </div>
+-->
+                <h2 class="mt-0 club-title">{{eventDetails.event_title}}</h2>
+                <p class="text-left white-space mt--20">
+                    {{eventDetails.description}}
+                </p>
+            </div>
+        </div> 
+         
+        <div class="card event-going-wrp">
+            <div class="row">
+                <div class="col col-50" ng-click="openModalAttendingMembers('interested', eventDetails.id)">
+                    <h3 class="text-red">{{eventDetails.count_interested}}</h3>
+                    <p>Interested</p>
+                </div>
+                <div class="col col-50" ng-click="openModalAttendingMembers('going', eventDetails.id)">
+                    <h3 class="text-green">{{eventDetails.count_going}}</h3>
+                    <p>Going</p>
+                </div>
+            </div>
+        </div> 
+
+        <div class="text-center">
+
+            <!-- User is a member -->
+            <div class="row" ng-if="clubDetails.club_user_type == 'member'">
+                <div class="col col-50">
+                    <button class="{{eventDetails.interested_btn_class}}" ng-click="clickAttendanceBtn('interested', eventDetails.interested_status)"> <i class="{{eventDetails.interested_btn_icon_class}}"></i> {{eventDetails.interested_btn_label}} </button>
+                </div>
+                <div class="col col-50">
+                    <button class="{{eventDetails.going_btn_class}}" ng-click="clickAttendanceBtn('going', eventDetails.going_status)"> <i class="{{eventDetails.going_btn_icon_class}}"></i> {{eventDetails.going_btn_label}} </button>
+                </div>
+            </div>
+
+            <!-- User has sent a request -->
+            <div class="padding" ng-if="clubDetails.club_user_type == 'request_sent'">
+                <button class="button button-calm button-small" ng-click="cancelClubRequest(clubDetails.id)">
+                    <i class="icon ion-person-add"></i> Cancel Club Request </button>
+            </div>
+                
+            <!-- User is an Outsider -->
+            <div class="padding" ng-if="clubDetails.club_user_type == 'outsider'">
+                <button class="button button-calm button-small" ng-click="joinClub(clubDetails.id)">
+                    <i class="icon ion-person-add"></i> Join This Club </button>
+            </div>
+                
+            <!-- User has received a request -->
+            <div class="padding" ng-if="clubDetails.club_user_type == 'request_came'">
+                <button class="button button-balanced button-small" ng-click="accept_reject_club_request('accept', clubDetails.id)">
+                    <i class="icon ion-person-add"></i> Accept This Club </button>
+                <button class="button button-assertive button-small" ng-click="accept_reject_club_request('reject', clubDetails.id)">
+                    <i class="icon ion-person-add"></i> Reject This Club </button>
+            </div>
+
+        </div>
+
+        
+        <div class="card event-club-wrp mt-0">
+            <div class="row">
+                <div class="col col-33 col-offset-33 event-club-dp">
+                    <img src="{{clubDetails.clubLogo}}">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-33">
+                    <p>Club</p>
+                </div>
+                <div class="col col-66">
+                    <p>: {{clubDetails.group_name}} </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-33">
+                    <p>Location</p>
+                </div>
+                <div class="col col-66">
+                    <p>: {{clubDetails.address}} </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-33">
+                    <p>Admin</p>
+                </div>
+                <div class="col col-66">
+                    <p>: {{clubDetails.admin}} </p>
+                </div>
+            </div>
+        </div>
+        <div class="card event-club-venue">
+            <div class="row">
+                <div class="col col-33">
+                    <p>Venue</p>
+                </div>
+                <div class="col col-66">
+                    <p>: {{eventDetails.event_venue}} </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-33">
+                    <p>Date</p>
+                </div>
+                <div class="col col-66">
+                    <p>: {{eventDetails.event_date}} </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-33">
+                    <p>Start Time</p>
+                </div>
+                <div class="col col-66">
+                    <p>: {{eventDetails.start_time}} </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-33">
+                    <p>End Time</p>
+                </div>
+                <div class="col col-66">
+                    <p>: {{eventDetails.end_time}} </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-33">
+                    <p>Address</p>
+                </div>
+                <div class="col col-66">
+                    <p>: {{eventDetails.address}} </p>
+                </div>
+            </div>
+        </div>
+
+        <div ng-if="mapStatus" class="card mb-10">
+            <div  class="item item-divider"> Map </div>
+            <div  class="list mb-0"> 
+                <div class="friends-profile-google-maps" >
+                    <img  ng-src="https://maps.googleapis.com/maps/api/staticmap?center={{eventDetails.postcode}}&size=400x400&maptype=roadmap &markers=color:red%7Clabel:S%7C {{lat}},{{lng}}&key=AIzaSyAgMo2K5TixWCkDGBvZXFCYw8SCCyRN9qQ&zoom=16" />
+                </div>
+            </div>
+        </div> 
+        
+    </ion-content>
+</ion-view>

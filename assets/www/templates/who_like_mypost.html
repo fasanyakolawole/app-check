@@ -1,0 +1,47 @@
+<ion-modal-view >
+    <ion-header-bar class="bar-calm">
+        <button class="button button-clear" ng-click="closeWhoLikePost()">
+            <i class="icon ion-ios-arrow-left"></i> Back
+        </button>
+        <div class="h1 title">Likes</div>
+    </ion-header-bar>
+    <ion-content>
+
+        <div ng-if="liked_users[0]['me'] == true">
+            <div class="padding" ng-if="num_of_like >= 1">
+                <p> <i class="icon ion-thumbsup"></i> <a ui-sref="app.myProfile" ng-click="closeWhoLikePost()">{{liked_users[0]['liked_by_name']}}</a> and {{num_of_like}} others  </p>
+            </div>
+            <div class="padding" ng-if="num_of_like < 1">
+                <p> <i class="icon ion-thumbsup"></i> <a ui-sref="app.myProfile" ng-click="closeWhoLikePost()">{{liked_users[0]['liked_by_name']}}</a></p>
+            </div>
+        </div>
+        <div ng-if="liked_users[0]['me'] != true">
+            <div class="padding" ng-if="num_of_like >= 1">
+                <p> <i class="icon ion-thumbsup"></i> <a ui-sref="app.friends_profile({friendid:liked_users[0]['liked_by']})" ng-click="closeWhoLikePost()">{{liked_users[0]['liked_by_name']}}</a> and {{num_of_like}} others  </p>
+            </div>
+            <div class="padding" ng-if="num_of_like < 1">
+                <p> <i class="icon ion-thumbsup"></i> <a ui-sref="app.friends_profile({friendid:liked_users[0]['liked_by']})" ng-click="closeWhoLikePost()">{{liked_users[0]['liked_by_name']}}</a></p>
+            </div>
+        </div>
+        <div class="list">
+            <div  ng-repeat="i in liked_users">
+                <div class="who-like-item item item-avatar">
+                    <img src="{{i.like_img_sen}}">
+                    <div ng-if="i.me == true">
+                        <h2><a ui-sref="app.myProfile" ng-click="closeWhoLikePost()">{{i.liked_by_name}}</a></h2>
+                    </div>
+                    <div ng-if="i.me != true">
+                        <h2><a ui-sref="app.friends_profile({friendid:i.liked_by})" ng-click="closeWhoLikePost()">{{i.liked_by_name}}</a></h2>
+                    </div>
+                    <p>{{i.liked_by_company_name}}</p>
+<!--                    <div class="pull-right mt--40 disconnect-friends" ng-if="i.me != true">
+                        <a class="button button-calm button-small" ng-if="i.f_status == 'Connect'" ng-click="sendFriendRequest(i.liked_by, 'whoLikedMyPost')"> <i class="icon ion-person-add"></i></a>
+                        <a class="button button-balanced button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="acceptFriendRequest(i.f_id, 'whoLikedMyPost')"> <i class="icon ion-person-add"></i></a>
+                        <a class="button button-calm button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="rejectFriendRequest(i.f_id, 'whoLikedMyPost')"> <i class="icon ion-person-add"></i></a>
+                        <a class="button button-energized button-small" ng-if="i.f_status == 'Request Sent'" ng-click="cancelFriendRequest(i.liked_by, 'whoLikedMyPost')"> <i class="icon ion-person-add"></i></a>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-modal-view>

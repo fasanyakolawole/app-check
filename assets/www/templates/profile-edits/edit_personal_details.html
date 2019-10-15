@@ -1,0 +1,53 @@
+<ion-modal-view ng-init="viewUserDetailsForEdit_test_country()">
+    <ion-header-bar class="bar-calm">
+        <button class="button button-clear" ng-click="closeEditPersonalDetails()">
+            <i class="icon ion-ios-arrow-left"></i> Back
+        </button>
+        <div class="h1 title">Edit Personal Details</div>
+        <button class="button button-assertive button-small" type="submit" ng-click="updateUser(user,4)"> save </button>
+    </ion-header-bar>
+    <ion-content>
+        <form>
+            <div class="list list-inset">
+            <label class="item item-input item-stacked-label myprofile-item-select">
+                <div class="input-label">Date of Birth</div> <br>
+                <select ng-model="user.day_select">
+                    <option>Day</option>
+                    <option ng-selected= "{{x.day == user.day_select}}" ng-repeat="x in date track by $index" value="{{x.day}}">{{x.day}}</option>
+                </select>
+                <select ng-model="user.month_select">
+                    <option>Month</option>
+                    <option ng-selected= "{{x.num == user.month_select}}" ng-repeat="x in month track by $index" value="{{x.num}}">{{x.month}}</option>
+                </select>
+                <select ng-model="user.year_select">
+                    <option>Year</option>
+                    <option ng-selected= "{{x.year == user.year_select}}" ng-repeat="x in year track by $index" value="{{x.year}}">{{x.year}}</option>
+                </select>
+            </label>
+        
+            <label class="item item-input item-stacked-label">
+                <input type="text" ng-model="user.user_fb" placeholder="https://www.facebook.com/username" ng-value="user.user_fb">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <input type="text" ng-model="user.user_tw" placeholder="https://twitter.com/username" ng-value="user.user_tw">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <input type="text" ng-model="user.user_lk" placeholder="https://www.linkedin.com/in/username" ng-value="user.user_lin">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <input type="text" ng-model="user.user_in" placeholder="https://www.instagram.com/username" ng-value="user.user_inst">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <input type="text" ng-model="user.user_yu" placeholder="https://www.youtube.com/channel/UCxzuZJXpHS2" ng-value="user.user_u_tube">
+            </label>
+            <label class="item item-input item-stacked-label">
+                <textarea class="personal-keyword-business" ng-model="user.key_words" placeholder="Key Words"></textarea>
+            </label>
+            <label class="item item-input item-stacked-label">
+                <textarea class="personal-about-business" ng-model="user.abt_busin" placeholder="About My Business"></textarea>
+            </label>
+        </div>
+        </form>
+        
+    </ion-content>
+</ion-modal-view>

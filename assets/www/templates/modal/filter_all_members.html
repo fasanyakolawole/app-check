@@ -1,0 +1,52 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-calm">
+        <button class="button button-clear" ng-click="closeFilterAllMembers()">
+            <i class="icon ion-ios-arrow-left"></i> Back
+        </button>
+        <div class="h1 title">Filter Members</div>
+    </ion-header-bar>
+    <ion-content>
+         
+        <div class="list list-inset filter-all-members">
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    County
+                </div>
+                <select ng-model="member.county_id" ng-options="obj.County as obj.County for obj in counties" ng-change="getTown(member.county_id)">    
+                    <option value="">All</option>
+                </select>
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Town
+                </div>
+                <select ng-model="member.town_id" ng-options="obj.id as obj.Town for obj in towns">    
+                    <option value="">All</option>
+                </select>
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Business Type
+                </div>
+                <select ng-model="member.business_type" ng-options="obj.industry_name as obj.industry_name for obj in business_types">    
+                    <option value="">All</option>
+                </select>
+
+
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Business Sector
+                </div>
+                <select ng-model="member.business_sector" ng-options="obj.business_sector_name as obj.business_sector_name for obj in business_sectors">    
+                    <option value="">All</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="padding pull-right">
+            <button class="button button-assertive button-small" ng-click="getAllMembers(member); closeFilterAllMembers()">Apply</button> 
+        </div>
+        
+    </ion-content>
+</ion-modal-view>

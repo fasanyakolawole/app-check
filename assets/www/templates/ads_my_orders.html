@@ -1,0 +1,37 @@
+<ion-view view-title="My Orders"  ng-init="getMyEnqueries('complete')">
+	<ion-content class="has-tabs-top">
+		<div class="has-input item-input-inset bar bar-header disable-user-behavior">
+			<label class="item-input-wrapper">
+				<input type="text" placeholder="Search" ng-model="sname">
+			</label>
+			<button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''">
+				Cancel
+			</button>  
+		</div> 
+		<div class="list mb-0">
+			<div class="row">
+				<div class="col-50  padding-right-2">
+					<button class="button button-full button-calm button-outline {{complete_button_class}} button-small" ng-click="getMyEnqueries('complete')">Completed Enquiries</button>
+				</div>
+				<div class="col-50 padding-left-2">
+					<button class="button button-full button-calm button-outline {{pending_button_class}} button-small" ng-click="getMyEnqueries('pending')">Pending Enquiries</button>
+				</div>
+			</div>
+		</div>
+		<div class="list list-border-top">
+			<ion-list>
+				<ion-item class="item item-avatar item-member-enquiry" ng-repeat="i in enquiries | filter:sname track by $index">
+					<img ng-src="{{i.image[0]['file_name']}}" ui-sref="app.viewMyOrderEnquiry({orderId:i.id})">
+					<h2 ui-sref="app.viewMyOrderEnquiry({orderId:i.id})"><b>{{i.pname}}</b></h2>
+					<p ui-sref="app.viewMyOrderEnquiry({orderId:i.id})">Order Date : {{i.o_date}}</p>
+					<p ui-sref="app.viewMyOrderEnquiry({orderId:i.id})">Price: {{i.price}}</p>
+					<ion-option-button class="button-assertive br-0 text-size-12" ng-if="enable_complete" ng-click="myOrdersDeleteAction(i.id)"> delete </ion-option-button>
+				</ion-item>
+				<div class="padding text-center text-blue" ng-if="!enquiries">
+					<p>No Data Found </p>
+					<p> <i class="icon ion-ios-cart text-size-30"></i> </p>
+				</div>
+			</ion-list>
+		</div>
+	</ion-content>
+</ion-view>

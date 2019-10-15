@@ -1,0 +1,69 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-calm">
+        <button class="button button-clear" ng-click="closeNewMessage()">
+            <i class="icon ion-ios-arrow-left"></i> Back
+        </button>
+        <div class="h1 title">New Message</div>
+    </ion-header-bar>
+    <ion-content>
+        <form name="composeMessageForm"  novalidate ng-submit="submit()">
+
+            <div class="list padding">
+                <div class="row no-padding mb-5">
+                    <div class="col">
+                        <md-chips disabled='checkboxVal.variable' collection='userList' ng-model='selectedUsers' text='To' md-title='title' md-thumbnail='thumbnailUrl' md-subtitle='subtitle' md-item='items' class='input' unique='checkboxVal.unique' />
+                    </div>
+                </div>
+                <div class="row no-padding mb-5">
+                    <div class="col">
+                        <label class="item item-input">
+                            <input type="text" placeholder="Subject" ng-model="subject" name="title" required>
+                        </label>
+                        <p ng-show="composeMessageForm.title.$touched && composeMessageForm.title.$invalid" class="text-red">Subject is required.</p>
+                    </div>
+                </div>
+
+                <div class="row no-padding">
+                    <div class="col">
+                        <label class="item item-input new-message-txtar">
+                            <textarea name="message_content" type="text" ng-model="message" placeholder="Your Message" required></textarea>
+                        </label>
+                        <p ng-show="composeMessageForm.message_content.$touched && composeMessageForm.message_content.$invalid" class="text-red">Message required.</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-20 col-offset-80">
+                        <button class="button button-calm button-block button-small pull-right" ng-click="composeMessage(selectedUsers, message, subject)" ng-disabled="composeMessageForm.$invalid">Send</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+
+        <div class="row" ng-if="firstChat">
+
+                <div ng-repeat="msg in firstChat" class="col col-25 new-msg-person text-center" ng-click="closeNewMessage()" ui-sref="app.chat({fid:msg.to,sid:msg.subject_id,chatname:msg.user_name,chstat:msg.sender_recirver, chread:msg.message_unread_bg})">
+
+                    <img src="{{msg.user_image}}">
+                    <p>{{msg.user_name}}</p>
+                    <p>{{msg.subject_title}} </p>
+                </div>
+        </div>
+
+        <div class="row" ng-if="secoundChat">
+
+                <div ng-repeat="msgs in secoundChat" class="col col-25 new-msg-person text-center" ng-click="closeNewMessage()" ui-sref="app.chat({fid:msgs.to,sid:msgs.subject_id,chatname:msgs.user_name,chstat:msgs.sender_recirver, chread:msgs.message_unread_bg})">
+
+                    <img src="{{msgs.user_image}}">
+                    <p>{{msgs.user_name}}</p>
+                    <p>{{msgs.subject_title}} </p>
+                </div>
+
+        </div>
+
+
+
+
+    </ion-content>
+</ion-modal-view>

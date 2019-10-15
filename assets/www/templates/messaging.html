@@ -1,0 +1,82 @@
+<ion-view view-title="Messages">
+    <ion-nav-buttons side="secondary">
+    </ion-nav-buttons>
+    <div ng-if="activation_active == 2">
+        <style>
+            .overflow-scroll .scroll {
+                position: static;
+                height: auto;
+                transform: translate3d(0, 0, 0);
+                -webkit-transform: translate3d(0, 0, 0);
+            }
+        </style>
+    </div>
+    <ion-content class="stable-bg has-tabs-top">
+
+        <div ng-if="activation_active == 2" class="overlay-notification">
+
+            <h4>
+                <i class="icon ion-android-alert text-size-30"></i>
+                <br>Your trial period is over. Please upgrade your account.
+                <br>
+                <button ui-sref="app.payment" class="button button-small text-bold">Upgrade</button>
+            </h4>
+        </div>
+        <!--		<div class="has-input item-input-inset bar bar-header disable-user-behavior" ng-if="activation_active == 1">
+                                <label class="item-input-wrapper">
+                                        <input type="search" placeholder="Search" ng-model="query">
+                                </label>
+                                <button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''">
+                                        Cancel
+                                </button>  
+                        </div> -->
+        <div class="has-input item-input-inset bar bar-header disable-user-behavior">
+            <label class="item-input-wrapper">
+                <input type="text" placeholder="Search" ng-model="sname">
+            </label>
+            <button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''">
+                Cancel
+            </button>
+        </div>
+        <ion-refresher on-refresh="doRefresh()" pulling-icon="ion-chevron-up" spinner="ripple"></ion-refresher>
+        <div>
+            <div class="list list-messages">
+                <ion-list>
+                    <ion-item class="item item-avatar noti-list-padding message-list {{msg.message_unread_bg}}" ng-repeat="msg in chatlist|orderBy:'send_time_tmp':true| filter:sname track by $index"
+                        ui-sref="app.chat({fid:msg.to,sid:msg.subject_id,chatname:msg.user_name,chstat:msg.sender_recirver,chread:msg.message_unread_bg, sen:msg.sender})"
+                        ng-click="readMessageChange($index, msg.subject_id)">
+                        <img ng-src="{{msg.user_image}}" alt="">
+                        <div class="row">
+                            <div class="col-75">
+                                <p class="mt-10">{{msg.user_name}} {{msg.pending_reply}}</p>
+                                <p>
+                                    {{msg.subject_title}}
+                                </p>
+                            </div>
+                            <div class="col-25 text-right text-muted">
+                                <span class="message-time">{{msg.send_time}}</span>
+                            </div>
+                        </div>
+                        <ion-option-button direction="right" class="button-positive border-radius-0 text-size-13" ng-click="readMessageChange($index, msg.subject_id)"
+                            ui-sref="app.chat({fid:msg.to,sid:msg.subject_id,chatname:msg.user_name,chstat:msg.sender_recirver, chread:msg.message_unread_bg, sen:msg.sender})">
+                            Reply </ion-option-button>
+                        <ion-option-button direction="left" class="button-assertive border-radius-0 text-size-13" ng-click="deleteMessage(msg.subject_id, msg.sender_recirver); removeItem($index)">
+                            Delete </ion-option-button>
+                    </ion-item>
+                </ion-list>
+            </div>
+            <div class="padding text-center text-blue" ng-if="chatlist.length == 0">
+                <p>No New Messages </p>
+                <p>
+                    <i class="icon ion-ios-email-outline text-size-30"></i>
+                </p>
+            </div>
+        </div>
+        <ion-infinite-scroll on-infinite="loadMore()" spinner="ripple" distance="1%" ng-if="more"></ion-infinite-scroll>
+    </ion-content>
+    <div ng-if="activation_active == 1">
+        <div class="button-fab calm-bg box-shadow" ng-click="openNewMessage({li: chatlist})">
+            <i class="icon ion-plus"></i>
+        </div>
+    </div>
+</ion-view>

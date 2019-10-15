@@ -1,0 +1,44 @@
+<ion-modal-view>
+    <form name="FilterForm"  >
+        <ion-header-bar class="bar-calm">
+            <button class="button button-clear" ng-click="closeLocalAdsFilter()">
+                <i class="icon ion-ios-arrow-left"></i> Back
+            </button>
+            <div class="h1 title">Local Ads Filter</div>
+        </ion-header-bar>
+        <ion-content>
+
+            <div class="item item-divider"> </div>
+            <div class="padding">
+                <ion-list>
+                    <div ng-repeat="group in category_groups">
+                        <ion-item class="item-stable" ng-click="group.childs.length >= 1 ? toggleGroup(group) : FilterLocalAds(location, group.id)"
+                                  ng-class="{active: isGroupShown(group)}">
+                            &nbsp;
+                            {{group.name}}
+                            <i class="icon assertive" ng-if="group.childs.length >= 0"  ng-class="isGroupShown(group) ? 'ion-android-arrow-dropright' : 'ion-android-arrow-dropdown'"></i>
+                        </ion-item>
+                        <a class="sub-ad-filter">
+                            <ion-item class="item-accordion"
+                                      ng-repeat="item in group.childs" ng-click="FilterLocalAds(location, group.id, item.id)" 
+                                      ng-show="isGroupShown(group)">
+                                <i class="icon ion ion-android-arrow-dropright"></i> &nbsp;
+                                {{item.name}}
+                            </ion-item>
+                        </a>
+                    </div>
+                </ion-list>
+
+                <ion-list>
+                    <a class="sub-ad-filter">
+                        <ion-item class="item-accordion"  ng-click="FilterLocalAds()">
+                            <i class="icon ion ion-android-arrow-dropright"></i> &nbsp;
+                            All
+                        </ion-item>
+                    </a>
+                </ion-list>
+
+            </div>        
+        </ion-content>
+    </form>
+</ion-modal-view>

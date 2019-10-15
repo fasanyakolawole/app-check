@@ -1,0 +1,43 @@
+<ion-modal-view cache-modal-view="false">
+    <form name="productForm" novalidate ng-submit="submit()">
+        <ion-header-bar class="bar-calm">
+            <button class="button button-clear" ng-click="closeModalMakeMeetings()">
+                <i class="icon ion-ios-arrow-left"></i> Back
+            </button>
+            <div class="h1 title">Meet {{member_name}}</div>
+            <button class="button button-assertive">Send</button>
+
+        </ion-header-bar>
+        <ion-content cache-view="false">
+
+            <div class="list list-inset">
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Title</span>
+                    <input type="text" placeholder="Title" ng-model="clubEvent.title" name="title" required>
+                    <span class="text-red" ng-show="productForm.title.$touched && productForm.title.$invalid">Title is required.</span>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Venue</span>
+                    <input type="text" placeholder="Venue" ng-model="clubEvent.venue" name="venue" required>
+                    <span class="text-red" ng-show="productForm.venue.$touched && productForm.venue.$invalid">Venue is required.</span>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Date</span>
+                    <input type="date" placeholder="Date" ng-model="clubEvent.event_date" name="event_date" ng-min="minDate" required>
+                    <span class="text-red" ng-show="productForm.event_date.$touched && productForm.event_date.$invalid">Date is required.</span>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Time</span>
+                    <input type="time" placeholder="Start Time" ng-model="clubEvent.start_time" name="start_time" required>
+                    <span class="text-red" ng-show="productForm.start_time.$touched && productForm.start_time.$invalid">Time is required.</span>
+                </label>
+                
+
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Description</span>
+                    <textarea placeholder="Description" ng-model="clubEvent.description" name="description"></textarea>
+                </label>
+            </div>
+        </ion-content>
+    </form>
+</ion-modal-view>

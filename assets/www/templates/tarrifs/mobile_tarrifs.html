@@ -1,0 +1,402 @@
+<ion-view view-title="Tariffs">
+<!--    <ion-nav-buttons side="secondary">
+        <button class="button button-icon ion-grid" ng-click="toggleMenu()"></button>
+    </ion-nav-buttons>
+    -->
+    <ion-content class="has-tabs-top">
+
+        <div class="list mb-0">
+            <div class="row">
+
+                <div class="col col-33">
+                    <button class="button button-full button-calm button-outline button-small" ng-click="TariffNavigation(1)" ng-class="{'active': var4 == 1}"> <i class="icon ion-iphone"></i> Mobile</button>
+                </div>
+                <div class="col col-33"> 
+                    <button class="button button-full button-calm button-outline button-small" ng-click="TariffNavigation(2)" ng-class="{'active': var4 == 2}"> <i class="icon ion-android-call"></i> Landline</button>
+                </div>
+                <div class="col col-33">
+                    <button class="button button-full button-calm button-outline button-small" ng-click="TariffNavigation(3)" ng-class="{'active': var4 == 3}"> <i class="icon ion-link"></i> Broadband</button>
+                </div>
+            </div>
+        </div> 
+
+		<!--Mobile Tab-->
+		<div class="list list-border-top" ng-if="var4 == 1">
+			
+			<div class="row">
+				<div class="col">
+					<h4 class="mb-0 mt-0 tarrif-headding"> Includes Unlimited Minutes and Texts </h4>
+				</div>
+			</div>
+			
+			<label class="item item-input item-select tariff-select">
+				<div class="input-label">
+<!--					How many connections <i class="icon ion-help-circled text-red" on-tap="mobileTarrifOne()"></i>-->
+                                        How many connections 
+				</div>
+				<select  ng-options="option.id for option in num_of_connections.availableOptions track by option.id"
+						ng-model="num_of_connections.selectedOption" ng-value="num_of_connections.selectedOption.id" 
+						ng-change="getMobileTarrifComparision(num_of_connections.selectedOption.id, num_of_gb.selectedOption.id, mobileProducts_tmp.selectedOption.id)" >
+				</select>
+			</label>
+			
+			
+			<label class="item item-input item-select tariff-select">
+				<i class="icon ion-help-circled text-red" on-tap="mobileTarrifTwo()"></i>
+				<div class="input-label">
+					GB data per user 
+                                        
+				</div>
+				<select  ng-options="option.id for option in num_of_gb.availableOptions track by option.id"
+						ng-model="num_of_gb.selectedOption" ng-value="num_of_gb.selectedOption.id" 
+						ng-change="getMobileTarrifComparision(num_of_connections.selectedOption.id, num_of_gb.selectedOption.id, mobileProducts_tmp.selectedOption.id)" >
+				</select> 
+			</label>
+			
+			
+			<label class="item item-input item-select tariff-select">
+				<div class="input-label">
+                                    
+<!--					Which products <i class="icon ion-help-circled text-red" on-tap="mobileTarrifThree()"></i>-->
+                                        Which products 
+				</div>
+				<select  ng-options="option.model_name for option in mobileProducts_tmp.availableOptions track by option.id"
+						ng-model="mobileProducts_tmp.selectedOption" ng-value="mobileProducts_tmp.selectedOption.id" 
+						ng-change="getMobileTarrifComparision(num_of_connections.selectedOption.id, num_of_gb.selectedOption.id, mobileProducts_tmp.selectedOption.id)" >
+				</select> 
+			</label>
+			
+			<div ng-if="enable_mobile_details">
+                <div class="padding">
+                    <p class="text-bold">Cheapest business mobile deals</p>
+					
+<!--
+					<table class="ion-table">
+						<tr>
+							<th> Network </th>
+							<th> Cost </th>
+							<th> Save </th>
+							<th> % </th>
+							<th>  </th>
+						</tr>
+						<tr ng-repeat="i in mobile_details| filter:query | orderBy:sortField:reverse">
+							<td class="tbl-img" style="pading-top: 5px;">  <img ng-src="{{i.image}}" style="padding-top: 7px;">  </td>
+							<td class="tbl-Cost"> <span>{{i.cost}} </span> </td>
+							<td class="tbl-Save"> <span>{{i.save}} </span> </td>
+							<td class="tbl-per"> <span>{{i.percentage}} </span> </td>
+							<td class="tbl-enq"> 
+								<button  class="button button-assertive button-small" ng-click="interestedOnMobileTarrif(i.sup_name, i.handset, i.totcon, i.mobi_data, i.monthly_cost, i.term)"> <i class="icon ion-thumbsup"></i></button> 
+							</td>
+						</tr>
+					</table>
+-->
+					<div class="table-tbl">
+						<div class="tr">
+							<div class="th tbl-img"> Network </div>
+							<div class="th tbl-cost"> Cost </div>
+							<div class="th tbl-save"> Save </div>
+							<div class="th tbl-per"> % </div>
+							<div class="th tbl-btn"></div>
+						</div>
+						<div class="tr" ng-repeat="i in mobile_details| filter:query | orderBy:sortField:reverse">
+							<div class="td tbl-img">  <img ng-src="{{i.image}}" style="padding-top: 7px;">  </div>
+							<div class="td tbl-cost"> {{i.cost}} </div>
+							<div class="td tbl-save"> {{i.save}} </div>
+							<div class="td tbl-per"> {{i.percentage}} </div>
+							<div class="td tbl-btn"> 
+								<button  class="button button-assertive button-small" ng-click="interestedOnMobileTarrif(i.sup_name, i.handset, i.totcon, i.mobi_data, i.monthly_cost, i.term)"> <i class="icon ion-thumbsup"></i> </button>
+							</div>
+						</div>
+					</div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        Includes: 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3 class="mb-0">{{model_name}}</h3>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col text-center terrif-bottom-img">
+                        <img src="{{model_image}}" class="img-responsive" >
+                    </div>
+                </div>
+                <div class="list list-inset tarrif-inner-list mt-0">
+                    <p class="item item-icon-left">
+                        <i class="icon ion-ios-checkmark"></i>
+                        Unlimited Texts
+                    </p>
+                    <p class="item item-icon-left">
+                        <i class="icon ion-ios-checkmark"></i>
+                        Unlimited Minutes
+                    </p>
+                    <p class="item item-icon-left">
+                        <i class="icon ion-ios-checkmark"></i>
+                        Data : {{model_data}} GB
+                    </p>
+                    <p class="item item-icon-left">
+                        <i class="icon ion-help-circled text-red" on-tap="mobileTarrifFour()"></i>
+                        Keep existing numbers and stay on your existing network 
+                    </p>
+                    <p class="item item-icon-left">
+                        <i class="icon ion-help-circled text-red" on-tap="mobileTarrifFive()"></i>
+                        Subject to fair usage policy
+                    </p>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>
+                            Cost is monthly, subject to network credit approval, status and availabilty, fixed term 
+                            contract [s], VAT - Business users only
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="padding text-center text-red" ng-if="!enable_mobile_details">
+                <p>No records found </p>
+                <p> <i class="icon ion-android-list text-size-30"></i> </p>
+            </div>
+
+        </div>
+
+        <!--Landline Tab-->
+        <div class="list list-border-top" ng-if="var4 == 2">
+
+            <div class="row">
+                <div class="col">
+                    <h4 class="mb-0 mt-0 tarrif-headding"> Unlimited calls to Landline and Mobile included </h4>
+                </div>
+            </div>
+			
+			
+			
+			<label class="item item-input item-select tariff-select">
+				<i class="icon ion-help-circled text-red" on-tap="mobileTarrifSix()"></i>
+				<div class="input-label">
+					How many lines 
+				</div>
+				<select  ng-options="option.id for option in num_of_lines.availableOptions track by option.id"
+                         ng-model="num_of_lines.selectedOption" ng-value="num_of_lines.selectedOption.id" 
+						ng-change="getLandlineTarrifComparision(num_of_lines.selectedOption.id, num_of_lines_needed.selectedOption.id)">
+				</select> 
+			</label>
+			
+			<label class="item item-input item-select tariff-select">
+				<i class="icon ion-help-circled text-red" on-tap="mobileTarrifSeven()"></i>
+				<div class="input-label">
+					VOIP | Hosted 
+				</div>
+				<select  ng-options="option.id for option in num_of_lines_needed.availableOptions track by option.id"
+                         ng-model="num_of_lines_needed.selectedOption" ng-value="num_of_lines_needed.selectedOption.id" 
+						ng-change="getLandlineTarrifComparision(num_of_lines.selectedOption.id, num_of_lines_needed.selectedOption.id)" >
+				</select> 
+			</label>
+			
+            <div class="padding" ng-if="enable_landline_details">
+                <p>Cheap business landline deals</p>
+<!--
+                <div class="ion-table">
+                    <div class="row table-row table-header no-padding mb-5">
+                        <a><div class="col table text-left">Network</div></a>
+                        <a ng-click="sortField = 'cost'; reverse = !reverse"><div class="col table text-lef">Cost</div></a>
+                        <a ng-click="sortField = 'save'; reverse = !reverse"><div class="col table text-lef">Save</div></a>
+                        <a ng-click="sortField = 'percentage'; reverse = !reverse"><div class="col table text-lft">%</div></a>
+                        <div class="col table text-center"></div>
+                    </div>
+                    <div class="row table-row tb-td" ng-repeat="i in landline_details| filter:query | orderBy:sortField:reverse">
+                        <div class="col table text-center"> <img ng-src="{{i.image}}" class="img-responsive"> </div>
+                        <div class="col table tbl-txt text-center text-xs-12">{{i.cost}}</div>
+                        <div class="col table tbl-txt text-center text-xs-12">{{i.save}}</div>
+                        <div class="col table tbl-txt text-center text-xs-12">{{i.percentage}}</div>
+                        <div class="col table text-center">
+                            <button class="button button-assertive button-small" ng-click="interestedOnLandlineTarrif(i.company_name, i.no_oflines, i.voip_con)"> <i class="icon ion-thumbsup"></i></button>
+                        </div>
+                    </div>
+                </div>
+-->
+				
+				<div class="table-tbl">
+					<div class="tr">
+						<div class="th tbl-img"> Network </div>
+						<div class="th tbl-cost"> Cost </div>
+						<div class="th tbl-save"> Save </div>
+						<div class="th tbl-per"> % </div>
+						<div class="th tbl-btn"></div>
+					</div>
+					<div class="tr" ng-repeat="i in landline_details| filter:query | orderBy:sortField:reverse">
+						<div class="td tbl-img">  <img ng-src="{{i.image}}" style="padding-top: 7px;">  </div>
+						<div class="td tbl-cost"> {{i.cost}} </div>
+						<div class="td tbl-save"> {{i.save}} </div>
+						<div class="td tbl-per"> {{i.percentage}} </div>
+						<div class="td tbl-btn"> 
+							<button class="button button-assertive button-small" ng-click="interestedOnLandlineTarrif(i.company_name, i.no_oflines, i.voip_con)"> <i class="icon ion-thumbsup"></i></button>
+						</div>
+					</div>
+				</div>
+            </div>
+            <div class="padding text-center text-red" ng-if="!enable_landline_details">
+                <p>No records found </p>
+                <p> <i class="icon ion-android-list text-size-30"></i> </p>
+            </div>
+            <div class="row">
+                <div class="col">
+                    Includes: 
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col text-center terrif-bottom-img">
+                    <img src="https://www.thebusinessclub.com/img/landcom.png" class="img-responsive">
+                </div>
+            </div>
+            <!--
+                    <div class="row">
+                        <div class="col">
+                            <h3>iPhone 7 32GB</h3>
+                        </div>
+                    </div>
+            -->
+            <div class="list list-inset tarrif-inner-list">
+                <p class="item item-icon-left">
+                    <i class="icon ion-ios-checkmark"></i>
+                    FREE fully featured desk phone with all VOIP | Hosted lines
+                </p>
+                <p class="item item-icon-left">
+                    <i class="icon ion-ios-checkmark"></i>
+                    Keep existing number[s]
+                </p>
+                <p class="item item-icon-left">
+                    <i class="icon ion-ios-checkmark"></i>
+                    Subject to contract
+                </p>
+                <p class="item item-icon-left">
+                    <i class="icon ion-help-circled text-red" on-tap="mobileTarrifEigth()"></i>
+                    Subject to fair usage policy 
+                </p>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p>
+                        Cost is monthly, subject to network credit approval, status and availabilty, fixed term
+                        contract [s], VAT - Business users only
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!--Broadband Tab-->
+        <div class="list list-border-top" ng-if="var4 == 3">
+
+            <div class="row">
+                <div class="col">
+                    <h4 class="mb-0 mt-0 tarrif-headding"> Unlimited broadband includes line rental and free router </h4>
+                </div>
+			</div>
+			
+			<label class="item item-input item-select tariff-select">
+				<i class="icon ion-help-circled text-red" on-tap="mobileTarrifNine()"></i>
+				<div class="input-label">
+					MB download speed  
+				</div>
+				<select  ng-options="option.id for option in download_speed.availableOptions track by option.id"
+						ng-model="download_speed.selectedOption" ng-value="download_speed.selectedOption.id" 
+						ng-change="getBroadbandTarrifComparision(download_speed.selectedOption.id)" >
+				</select> 
+			</label>
+			
+			<div class="padding" ng-if="enable_broadband_details">
+				<p>Cheap business landline deals</p>
+
+<!--
+                <div class="ion-table">
+                    <div class="row table-row table-header no-padding mb-5">
+                        <div class="col table">Network</div>
+                        <a href="" ng-click="sortField = 'cost'; reverse = !reverse"><div class="col table text-lef">Cost</div></a>
+                        <a href="" ng-click="sortField = 'save'; reverse = !reverse"><div class="col table text-lef">Save</div></a>
+                        <a href="" ng-click="sortField = 'percentage'; reverse = !reverse"><div class="col table text-lef">%</div></a>
+                        <div class="col table"></div>
+                    </div>
+                    <div class="row table-row tb-td" ng-repeat="i in broadband_details| filter:query | orderBy:sortField:reverse">
+                        <div class="col table text-center"> <img ng-src="{{i.image}}" class="img-responsive"> </div>
+                        <div class="col table tbl-txt text-center text-xs-12">{{i.cost}}</div>
+                        <div class="col table tbl-txt text-center text-xs-12">{{i.save}}</div>
+                        <div class="col table tbl-txt text-center text-xs-12">{{i.percentage}}</div>
+                        <div class="col table text-center">
+                            <button class="button button-assertive button-small" ng-click="interestedOnBroadbandTarrif(i.company_name, i.data_pack)"> <i class="icon ion-thumbsup"></i></button>
+                        </div>
+                    </div>
+                </div>
+-->
+				
+				<div class="table-tbl">
+					<div class="tr">
+						<div class="th tbl-img"> Network </div>
+						<div class="th tbl-cost"> Cost </div>
+						<div class="th tbl-save"> Save </div>
+						<div class="th tbl-per"> % </div>
+						<div class="th tbl-btn"></div>
+					</div>
+					<div class="tr" ng-repeat="i in broadband_details| filter:query | orderBy:sortField:reverse">
+						<div class="td tbl-img">  <img ng-src="{{i.image}}" style="padding-top: 7px;">  </div>
+						<div class="td tbl-cost"> {{i.cost}} </div>
+						<div class="td tbl-save"> {{i.save}} </div>
+						<div class="td tbl-per"> {{i.percentage}} </div>
+						<div class="td tbl-btn"> 
+							<button class="button button-assertive button-small" ng-click="interestedOnBroadbandTarrif(i.company_name, i.data_pack)"> <i class="icon ion-thumbsup"></i></button>
+						</div>
+					</div>
+				</div>
+				
+            </div>
+            <div class="row">
+                <div class="col">
+                    Includes: 
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col text-center terrif-bottom-img">
+                    <img src="https://www.thebusinessclub.com/img/bb.png" class="img-responsive">
+                </div>
+            </div>
+            <!--
+                    <div class="row">
+                        <div class="col">
+                            <h3>iPhone 7 32GB</h3>
+                        </div>
+                    </div>
+            -->
+            <div class="list list-inset tarrif-inner-list">
+                <p class="item item-icon-left">
+                    <i class="icon ion-ios-checkmark"></i>
+                    Business grade broadband
+                </p>
+                <p class="item item-icon-left">
+                    <i class="icon ion-ios-checkmark"></i>
+                    Price includes montly line rental
+                </p>
+                <p class="item item-icon-left">
+                    <i class="icon ion-ios-checkmark"></i>
+                    Subject to contract
+                </p>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <p>
+                        Cost is monthly, subject to network credit approval, status and availabilty, fixed term contract 
+                        [s], VAT - Business users only
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </ion-content>
+</ion-view>

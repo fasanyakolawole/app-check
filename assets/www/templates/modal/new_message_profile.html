@@ -1,0 +1,63 @@
+<ion-modal-view>
+    <ion-header-bar class="bar-calm">
+        <button class="button button-clear" ng-click="closeNewMessageProfile()">
+            <i class="icon ion-ios-arrow-left"></i> Back
+        </button>
+        <div class="h1 title">New Message - {{useruName}}</div>
+    </ion-header-bar>
+    <ion-content>
+<!--
+        <div class="item-input-inset bar bar-header disable-user-behavior">
+            <label class="item-input-wrapper">
+                <input type="search" placeholder="Search" ng-model="query" ng-init="query=''" focus-me>
+            </label>
+            <button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''">
+                Cancel
+            </button>  
+        </div> 
+        
+        <div class="list" ng-show="filtedUsers.length && query.length">
+            <div class="item item-avatar cursor-on" ng-repeat="user in filtedUsers = (users | filter: query)">
+                <img ng-src="{{user.face}}">
+                <h2><b>{{user.name}}</b></h2>
+                <p>{{user.lastText}}</p>  
+            </div> 
+        </div>
+-->
+        <!-- {{userList}}
+
+        <br><br><br>
+        {{itemsCollection}} -->
+
+        <form name="composeMessageForm"  novalidate ng-submit="submit()">
+        
+        <div class="list list-inset">
+          
+            <div class="row row-no-padding mb-15">
+                <div class="col">
+                    <label class="item item-input">
+                        <input type="text" placeholder="Subject" ng-model="subject" name="title" required>
+                    </label>
+                    <p ng-show="composeMessageForm.title.$touched && composeMessageForm.title.$invalid" class="text-red">Subject is required.</p>
+                </div>
+            </div>
+            <div class="row row-no-padding mb-15">
+                <div class="col">
+                    <label class="item item-input new-message-txtar">
+                        <textarea name="message_content" type="text" ng-model="message" placeholder="Your Message" required></textarea>
+                    </label>
+                    <p ng-show="composeMessageForm.message_content.$touched && composeMessageForm.message_content.$invalid" class="text-red">Message required.</p>
+                    
+                </div>
+            </div>    
+            <div class="row row-no-padding">
+                <div class="col-25 col-offset-75">
+                    <button class="button button-calm button-small button-full" ng-click="composeMessageProfile(userProfileId, message, subject); closeNewMessageProfile()">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+        </form>
+    </ion-content>
+</ion-modal-view>

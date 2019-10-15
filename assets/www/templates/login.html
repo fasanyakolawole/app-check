@@ -1,0 +1,38 @@
+<ion-view view-title="Login">
+	
+	<ion-content overflow-scroll="false" class="login-bg">
+		<div class="hero">
+			<div class="content no-header">
+				<span class="logo"></span>
+			</div>
+		</div>
+		<form ng-submit="doLogin(frm)" novalidate="" name="frm">
+			<div class="list">
+				<div class="item-md-label" ng-show="message">
+					<div class="label-danger">{{message}}</div>
+				</div>
+				<label class="item item-input item-floating-label">
+					<span class="input-label">Username</span>
+					<input type="text" placeholder="Username" ng-model="u.user" required>
+				</label>
+				<label class="item item-input item-floating-label">
+					<span class="input-label">Password</span>
+					<input type="password" placeholder="Password" ng-model="u.pass" required>
+				</label>
+				<label class="item-input item-md-label">
+					<button type="submit" class="button button-full button-balanced ink round" ng-disabled="frm.$invalid">Login</button>
+				</label>
+				<div class="padding">
+					<div class="divider">
+						<div class="line left"></div>
+						<div class="line right"></div>
+						<div class="text">OR</div>
+					</div>
+				</div>
+				<div class="padding">
+					<button type="button" ui-sref="app.register" class="button button-full button-energized ink round">Create an Account</button>
+				</div>
+			</div>
+		</form> 
+	</ion-content>
+</ion-view>

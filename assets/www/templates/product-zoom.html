@@ -1,0 +1,17 @@
+<div class="modal image-modal transparent" on-swipe-down="closeModal()">
+	<button class="button ink button-icon button-clear ion-close" ng-click="closeModal()"></button>
+	<ion-slide-box on-slide-changes="slideChanged(index)" active-slide="activeSlide" show-pager="false" does-continue="true">
+		<ion-slide ng-repeat="x in product.images track by $index" style="height: {{screenHeight}};">
+			<ion-scroll overflow-scroll="false" direction="xy" scrollbar-x="false" scrollbar-y="false" zooming="true" min-zoom="{{zoomMin}}" style="width: 100%; height: 100%" delegate-handle="scrollHandle{{$index}}" on-scroll="updateSlideStatus(activeSlide)" on-release="updateSlideStatus(activeSlide)">
+				<div class="img-zoom" style="height: {{screenHeight}}px;">
+					<ion-spinner class="onload"></ion-spinner>
+					<div class="img" style="background-image:url('{{product.images[$index].src}}');"></div>						
+				</div>
+			</ion-scroll>
+		</ion-slide>
+	</ion-slide-box>
+	<div class="page">
+		<div class="txt">{{product.title}}</div>
+		<div class="num">{{activeSlide + 1}} / {{product.images.length}} </div>
+	</div>
+</div>

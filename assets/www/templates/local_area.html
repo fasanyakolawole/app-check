@@ -1,0 +1,124 @@
+<ion-view view-title="Local">
+    <ion-content class="has-tabs-top">
+        <style>
+            .img{
+
+                position: relative;
+                width: 100%;
+                height: 100%;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                z-index: 2;
+            }
+        </style>
+        <ion-refresher on-refresh="localRefresh(var1)" pulling-icon="ion-chevron-up" spinner="ripple"></ion-refresher>
+        <div class="has-input item-input-inset bar bar-header disable-user-behavior">
+            <label class="item-input-wrapper">
+                <input type="search" placeholder="Search" ng-model="query" ng-init="query = ''">
+            </label>
+            <button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''">
+                Cancel
+            </button>  
+        </div> 
+        <div class="row"> 
+            <div class="col col-50"> 
+                <a class="button button-small button-full button-calm button-outline" ng-click="localNavigation(1)" ng-class="{'active': var1 == 1}">Local Members</a>
+            </div>
+            <div class="col col-50">
+                <a class="button button-small button-full button-calm button-outline" ng-click="localNavigation(2)" ng-class="{'active': var1 == 2}">Local Ads</a>
+            </div>
+        </div>
+
+        <!--Local Connection Tab-->
+        <div class="list list-border-top" ng-if="var1 == 1">
+            <ion-list class="">
+                <ion-item class="connection-list" ng-repeat="i in connections| filter:query track by $index">
+                    <div class="row no-padding">
+                        <div class="col col-15 no-padding">
+                            <div class="view-pro-img">
+                                <div class="img" style="background-image: url({{i.profile_img}})" ui-sref="app.friends_profile({friendid:i.id})"></div>
+                            </div>
+                        </div>
+                        <div class="col col-85 no-padding view-pro">
+                            <div class="local-user-info">
+                                <h2><a ui-sref="app.friends_profile({friendid:i.id})">{{i.contact_name}}</a></h2>
+                                <p ui-sref="app.friends_profile({friendid:i.id})">{{i.company}}</p>
+                                <p class="text-size-12 text-color-dark text-bold">{{i.town}} | {{i.country}} | {{i.user_country}}</p>
+                            </div>
+                            <div class="pull-right mt--50 disconnect-friends" ng-if="i.me != true && activation_active == 1">
+                                <!-- <a href="#" class="button button-assertive  button-small pull-right"><i class="icon ion-android-close"></i></a> -->
+                                <a class="button button-calm button-small" ng-if="i.f_status == 'Connect'" ng-click="sendFriendRequest(i.id, 'localAreaConnections')"> <i class="icon ion-person-add"></i></a>
+
+                                <a class="button button-calm button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="acceptFriendRequest(i.f_id, 'localAreaConnections')"> <i class="icon ion-checkmark-round"></i></a>
+
+                                <a class="button button-assertive button-small" ng-if="i.f_status == 'Accept/Reject'" ng-click="rejectFriendRequest(i.f_id, 'localAreaConnections')"> <i class="icon ion-close-round"></i></a>
+
+                                <a class="button button-req-sent button-small" ng-if="i.f_status == 'Request Sent'" ng-click="cancelFriendRequest(i.id, 'localAreaConnections')"> Pending</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareMembers(i.company_share, i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareMembers(i.company_share, i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-calm" ng-click="whatsappShareMembers(i.company_share, i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-positive" ng-click="sendSMSMembers(i.company_share, i.id, i.company_name_share)"> <i class="icon ion-ios-email"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-outline button-share" ng-click="linkedinShareMembers(i.company_share, i.id)"> <i class="icon ion-share"></i> </ion-option-button>
+
+                </ion-item>
+            </ion-list>
+
+            <div class="padding text-center text-blue" ng-if="connections.length == 0">
+                <p>No Connections Found </p>
+                <p> <i class="icon ion-person-stalker text-size-30"></i> </p>
+            </div> 
+            <ion-infinite-scroll ng-if="con_more" spinner="ripple"  on-infinite="loadMoreLocalConnections()" distance="1%"></ion-infinite-scroll> 
+        </div>
+
+        <!--Local Ads Tab-->
+        <div class="list list-border-top" ng-if="var1 == 2">
+            <ion-list ng-repeat="i in local_ads| filter:query track by $index ">
+                <ion-item class="ads-desc item item-thumbnail-left border-radius-0" ui-sref="app.myadsingle({id:i.id})">
+                    <img ng-src="{{i.image_location}}{{i.images[0].file_name}}"  >
+                    <div class="row no-padding" >
+                        <div class="col col-80 no-padding"> 
+                            <h2><b>{{i.product_name}}</b></h2>
+                            <p>{{i.product_small_desc}}</p>
+                            <div class="row row-no-padding">
+                                <div class="col col-50 text-green" ng-if="i.new_price != 0.00">
+                                    Now  £ {{i.new_price}}
+                                </div>
+                                <div class="col col-50 text-right" ng-if="i.basic_price != null">
+                                    <span class="reg-price">£ {{i.basic_price}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-20 no-padding">
+                            <div class="offer-box"> 
+                                <span class="offer-text"> {{i.discount_price}}%  <br> OFF</span>
+                            </div>
+                        </div>
+                    </div>                    
+                    <ion-option-button class="drag-button button-outline button-facebook" ng-click="tbcSocialShareAds('facebook', i.id, i.product_name)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-outline button-twitter" ng-click="tbcSocialShareAds('twitter', i.id, i.product_name)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-calm" ng-click="tbcSocialShareAds('whatsapp', i.id, i.product_name)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-positive" ng-click="tbcSocialShareAds('sms', i.id, i.product_name)"> <i class="icon ion-ios-email"></i> </ion-option-button>
+                    <ion-option-button class="drag-button button-outline button-share" ng-click="tbcSocialShareAds('others', i.id, i.product_name)"> <i class="icon ion-share"></i> </ion-option-button>
+
+                </ion-item>
+            </ion-list>
+
+            <div class="padding text-center text-blue" ng-if="local_ads.length == 0">
+                <p>No Ads Found </p>
+                <p> <i class="icon ion-person-stalker text-size-30"></i> </p>
+            </div> 
+            <ion-infinite-scroll ng-if="ads_more" spinner="ripple" on-infinite="loadMoreAllLocalAds()" distance="1%"></ion-infinite-scroll> 
+        </div>
+
+
+
+    </ion-content>
+    <div class="button-fab calm-bg box-shadow" ng-click="openLocalAdsFilter()" ng-if="var1 == 2"> 
+        <i class="icon ion-search"></i>
+    </div> 
+</ion-view>

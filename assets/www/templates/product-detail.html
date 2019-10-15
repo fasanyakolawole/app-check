@@ -1,0 +1,168 @@
+<ion-view view-title="Product">
+    <ion-content class="has-tabs-top view-product">
+        <ion-refresher spinner="ripple" on-refresh="singleProductView()" pulling-icon="ion-chevron-up" spinner="ripple"></ion-refresher>
+        <div class="offer-circle" ng-if="i.discount_percentage > 0"> 
+            <span class="offer-text"> {{i.discount_percentage}}%  <br> OFF</span>
+        </div>
+        <h4 class="text-center">{{productE.product_name}}</h4>
+        <p class="text-center">{{productE.product_small_description}}</p>
+
+        <ion-slide-box on-slide-changed="slideHasChanged($index)" auto-play="1000" does-continue="true" >
+            <ion-slide ng-repeat="i in productE.images">
+                <div class="img-view-ad">
+                    <img ng-src="{{i.file_name}}" ng-click="adsImageView(i.file_name)">
+                </div>
+            </ion-slide>
+        </ion-slide-box>
+            
+        
+        <div ng-if="userkey"> 
+            <div class="pull-right padding" ng-if="productE.added_by != userDetails.id">
+                <button class="button-small button-clear viewAds report-button mb-10"  ng-click="openReport(repost_this)"> 
+                    <i class="icon ion-ios-information"></i>
+                </button> 
+            </div>
+        </div>
+        <div class="row" ng-if="productE.countdown_second > 0">
+            <div class="col" >
+
+                <h4 class="text-center mb-25 pb-5">Time Remaining </h4>
+                <div class="text-center ads-timer">
+                    <timer countdown="countdown_second" interval="1000" max-time-unit="'month'">
+                        <div class="ad-timer-div"> <span>{{months}} </span> <br>  Months  </div>
+                        <div class="ad-timer-div"> <span>{{days}}  </span><br>  Days </div>
+                        <div class="ad-timer-div"> <span>{{hours}} </span> <br>  Hours  </div>
+                        <div class="ad-timer-div"> <span>{{minutes}} </span> <br>  Min  </div>
+                        <div class="ad-timer-div"> <span>{{seconds}} </span> <br>  Sec </div> 
+                    </timer>
+                </div>        
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="card padding text-center" ng-if="productE.basic_price != 0.00">
+            <div class="row no-padding" ng-if="productE.basic_price != null">
+                <div class="col no-padding">
+                    <p class="mb-0"> Regular Price </p>
+
+                    <div ng-if="productE.discount_price != '0.00'">
+                        <h4 class="calm mt-0" ng-if="productE.basic_price != null"><span class="regular-price"> £ {{productE.basic_price}} </span> </h4>
+                        <h4 ng-if="productE.basic_price == null" class="calm mt-0"><span class="regular-price"> £ 0 </span> </h4>
+                    </div>
+
+                    <div ng-if="productE.discount_price == '0.00'">
+                        <h4 class="text-green mb-0 mt-0"> £ {{productE.basic_price}} </h4>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="line" ng-if="productE.discount_price != null && productE.discount_price != 0"></div>
+
+            <div class="row" ng-if="productE.discount_price != null && productE.discount_price != 0">
+                <div class="col">
+                    <p class="mb-0"> Discounted Price </p>
+                    <h4 class="assertive mb-0 mt-0"> £ {{productE.discount_price}} </h4>
+                </div>
+            </div>
+
+            <div class="line" ng-if="productE.a_save != null"></div>
+
+            <div class="row no-padding" ng-if="productE.a_save != null">
+                <div class="col pb-0">
+                    <p class="mb-0">You Save </p>
+                    <h4 class="text-green mb-0 mt-0"> £ {{productE.a_save}} </h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="padding mb-0">
+            <div class="button-bar">
+                <a class="button border-radius-0 button-small no-border" ng-click="clicked(1)" ng-class="{'button-assertive': varp == 1}">Item Description</a>
+                <a class="button border-radius-0 button-small no-border" ng-click="clicked(2)" ng-class="{'button-assertive': varp == 2}">Member Details</a>
+            </div>
+            <div class="card padding mt-0 mh-375">
+                <p ng-if="varp == 1">
+                    <ng-bind-html class="product-description"  ng-bind-html="productE.product_description"></ng-bind-html>
+                </p>
+                <div ng-if="varp == 2">
+                    
+                    <div class="row row-no-padding">
+                        <div class="col ad-member-details">
+                            <p><b>{{productE.view_member}}</b> </p>
+                            <p>{{productE.added_by_name}} </p>
+                            <p>{{productE.user_address1}} <span ng-if="productE.user_address2 != ''">, {{productE.user_address2}} </span></p>
+                            <p>{{productE.user_email}} </p>
+                            <p>{{productE.user_tel}} </p>
+                            <p>{{productE.postcode}} </p>
+                        </div>
+                    </div>
+                    <div>
+                        <div >
+                            <div  class="list mb-0"> 
+                                <div class="friends-profile-google-maps">
+                                    <img class="img-responsive" ng-src="https://maps.googleapis.com/maps/api/staticmap?center={{productE.postcode}}&size=400x400&maptype=roadmap &markers=color:red%7Clabel:S%7C {{latp}},{{lngp}}&key=AIzaSyAgMo2K5TixWCkDGBvZXFCYw8SCCyRN9qQ&zoom=16">
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="list mb-0">
+                        <div class="item statistic-box no-padding">
+                            <div class="row pl-0">
+                                <div class="col col-20 pl-0">
+                                    <div class="number-box">
+                                        <i class="fa fa-random"></i> {{productE.num_of_request}}
+                                    </div>
+                                </div>
+                                <div class="col col-80">
+                                    <p><b>Requests</b></p>
+                                </div>
+                            </div>
+                            
+                            <div class="row pl-0">
+                                <div class="col col-20 pl-0">
+                                    <div class="number-box">
+                                        <i class="fa fa-bullhorn"></i> {{productE.num_of_ads}}
+                                    </div>
+                                </div>
+                                <div class="col col-80">
+                                    <p><b>Ads</b></p>
+                                </div>
+                            </div>
+                            
+                            <div class="row pl-0">
+                                <div class="col col-20 pl-0">
+                                    <div class="number-box">
+                                        <i class="fa fa-connectdevelop"></i> {{productE.num_of_connections}}
+                                    </div>
+                                </div>
+                                <div class="col col-80">
+                                    <p><b>Connections</b></p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <div class="row no-padding">
+                        <div class="col padding-left-0">
+                            <b>Member Since</b> - {{productE.member_since}}
+                        </div>
+                    </div>
+
+                    <div class="row no-padding">
+                        <div class="col padding-left-0">
+                            <b>Business Type</b>  - {{productE.business_type}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+    </ion-content>
+
+    <div ng-if="loginStatus && activation_active==1">
+        <div ng-if="productE.added_by != userDetails.id" class="button-fab assertive-bg box-shadow" ng-click="showActionsheetPorduct({product_id:productE.product_id}, '{{productE.user_tel}}')">
+            <i class="icon ion-ios-email-outline"></i>
+        </div>
+    </div>
+</ion-view>

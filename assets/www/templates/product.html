@@ -1,0 +1,57 @@
+<ion-view view-title="Product">
+	<ion-nav-buttons side="right">
+		<div class="ink">
+			<button class="button ink button-icon button-clear ion-ios-heart{{isWishlist ? '' : '-outline'}}" ng-if="product && product.in_stock" ng-click="toWishlist(product)">
+			</button>
+		</div>
+		<div class="cart-total ink" ui-sref="app.cart">
+			<div ng-if="totalCartItem>0">
+				<span>{{totalCartItem}}</span>
+			</div>
+			<button class="button ink button-icon button-clear fa fa-shopping-basket"></button>
+		</div>
+	</ion-nav-buttons>
+	<ion-content class="product">
+		<div class="badge" ng-if="product.description">
+			<span ng-if="!product.in_stock && product" class="sold">Sold out</span>
+			<span ng-if="product.regular_price > 0 && product.on_sale" class="sale">
+				{{product | discount | number:0}}% OFF
+			</span>
+		</div>
+		<ion-slide-box does-continue="true" class="slider" show-pager="true">
+			<ion-slide ng-repeat="y in product.images" ng-click="showImages($index)">
+				<ion-spinner class="onload"></ion-spinner>
+				<div ng-if="y.src" ng-show="y.src" class="img" style="background-image: url({{y.src}})"></div>
+				<button class="button ink button-icon button-clear ion-arrow-expand"></button>
+			</ion-slide>
+		</ion-slide-box>
+		<div class="padding product">
+			<h3 class="title" ng-bind-html="product.title"></h3>
+			<div class="price" ng-if="product">
+				<b ng-bind-html="product.price | currency:format:decimal"></b>
+				<del ng-show="product.regular_price > 0 && product.on_sale" ng-bind-html="product.regular_price | currency:format:decimal"></del>
+				<span class="pull-right" ng-click="share(product)">
+					<i class="icon ion-android-share"></i> <b>Share</b>
+				</span>
+			</div>
+		</div>
+		<div ng-if="product.variations.length>0">
+			<div class="item item-divider">
+				PRODUCT VARIATIONS
+			</div>
+			<ion-list>
+				<ion-radio ng-repeat="z in product.variations" ng-value="{{$index}}" ng-click="setVariation(z);">
+					<span>{{z.attributes[0].option}}</span>
+				</ion-radio>
+			</ion-list>
+		</div>
+		<div class="item item-divider" ng-if="product">
+			PRODUCT DESCRIPTION
+		</div>
+		<div ng-bind-html="product.description" class="padding"></div>
+	</ion-content>
+	<ion-footer-bar>
+		<button ng-if="product.variations.length>0" class="button button-energized" ng-click="addItem(product, 1)" ng-disabled="!product.option || !product.in_stock">{{product.in_stock ? 'Add to Cart' : 'Sold Out'}}</button>
+		<button ng-if="product.variations.length==0" class="button button-energized" ng-click="addItem(product, 1)" ng-disabled="!product.in_stock">Add to Cart</button>
+	</ion-footer-bar>
+</ion-view>

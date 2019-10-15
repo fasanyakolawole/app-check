@@ -1,0 +1,190 @@
+<ion-view view-title="Events" >
+	<style>
+		.img{
+			
+			position: relative;
+			width: 100%;
+			height: 100%;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			z-index: 2;
+		}
+	</style>
+	<ion-content class="has-tabs-top">
+		<ion-refresher on-refresh="eventsRefresh(var5)" pulling-icon="ion-chevron-up" spinner="ripple" ></ion-refresher>
+		<div class="has-input item-input-inset bar bar-header disable-user-behavior">
+			<label class="item-input-wrapper">
+                <input type="text" placeholder="Search" ng-model="query" ng-change="getEventSearch(query,var5)" >
+                              
+			</label>
+			<button class="button button-clear" ng-show="query.length > 0" ng-click="query = ''; getEventSearch(query,var5)">
+				Cancel 
+			</button>  
+		</div> 
+
+        <!-- {{var5}} -->
+        <div class="list mb-0 tab-button" ng-if="loginStatus === true">
+            <div class="row">
+                <div class="col col-33" >
+                    <button class="button button-full button-calm button-outline button-small" ng-click="TabChangeEventList(1)" ng-class="{'active': var5 == 1}">My Events</button>
+                </div>
+                <div class="col col-33" >
+                    <button class="button button-full button-calm button-outline button-small" ng-click="TabChangeEventList(2)" ng-class="{'active': var5 == 2}">Expired Events</button>
+                </div>
+                <div class="col col-33" > 
+                    <button class="button button-full button-calm button-outline button-small" ng-click="TabChangeEventList(3)"ng-class="{'active': var5 == 3}">Live Events</button>
+                </div>
+            </div>
+        </div>
+
+        <!--My Events Tab-->
+        <div class="list list-border-top" ng-if="var5 == 1">
+        	
+        	<ion-list>
+				<ion-item class="connection-list" ng-repeat="i in my_events| filter:sname track by $index" on-hold="showEventAction(i.id, 'my_events')">
+					<div class="row no-padding" ui-sref="app.view_club_event({id:i.id})">
+						<div class="col col-15 no-padding">
+							<div class="view-pro-img">
+								<div class="img" style="background-image: url({{i.image}})"></div>
+							</div>
+						</div>
+						<div class="col col-85 no-padding view-pro">
+							<h2><b>{{i.event_title}}</b></h2>
+							<p>{{i.event_datetime}}</p>
+							<p class="text-size-12 text-color-dark text-bold">{{i.full_location}}</p>
+						</div>
+					</div>
+
+					<ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareEvents(i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareEvents(i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-balanced" ng-click="whatsappShareEvents(i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+					<ion-option-button class="drag-button button-positive" ng-click="sendSMSEvents(i.id)"> <i class="icon ion-ios-email"></i> </ion-option-button>    
+                    <ion-option-button class="drag-button button-outline button-share" ng-click="moreShocialShareEvents(i.id, i.event_title, i.full_location, i.image, null)"> <i class="icon ion-share"></i> </ion-option-button>
+				</ion-item>
+			</ion-list> 
+
+            <div class="row">
+                <div class="col">
+                    <div class="text-center text-blue" ng-if="my_events.length == 0">
+                        <p>No My Events Available</p>
+                        <p> <i class="icon ion-coffee text-size-30"></i> </p> 
+                    </div>
+                </div>
+            </div>
+            
+          	<ion-infinite-scroll ng-if="myevent_more" spinner="ripple" on-infinite="getMyEventsMore()" distance="10%"></ion-infinite-scroll> 
+
+        </div>
+
+        <!--Expired Events Tab-->
+        <div class="list list-border-top" ng-if="var5 == 2">
+
+            <ion-list> 
+                <ion-item class="connection-list sndlist" ng-repeat="i in my_expired_events| filter:sname track by $index" on-hold="showEventAction(i.id, 'expired_events')">
+                    <div class="row no-padding" ui-sref="app.view_club_event({id:i.id})">
+                        <div class="col col-15 no-padding">
+                            <div class="view-pro-img">
+                                <div class="img" style="background-image: url({{i.image}})"></div>
+                            </div>
+                        </div>
+                        <div class="col col-85 no-padding view-pro">
+                            <h2><b>{{i.event_title}}</b></h2>
+                            <p>{{i.event_datetime}}</p>
+                            <p class="text-size-12 text-color-dark text-bold">{{i.full_location}}</p>
+                        </div>
+                    </div>
+                </ion-item>
+            </ion-list> 
+            <div class="row">
+                <div class="col">
+                    <div class="text-center text-blue" ng-if="my_expired_events.length==0" >
+                        <p> No Expired Events Available</p>
+                        <p> <i class="icon ion-coffee text-size-30"></i> </p> 
+                    </div>
+                </div>
+            </div>
+            
+            <ion-infinite-scroll ng-if="myexMore" spinner="ripple" on-infinite="getMyExpiredEventsMore()" distance="10%"></ion-infinite-scroll> 
+        </div>
+
+        <!--All Events Tab-->
+        <div class="list list-border-top" ng-if="var5 == 3">
+            
+            <div ng-if="county == 'All' && town_id == 'All'">
+                <ion-list>
+                    <ion-item class="connection-list" ng-repeat="i in all_events| filter:sname track by $index">
+                        <div class="row no-padding" ui-sref="app.view_club_event({id:i.id})">
+                            <div class="col col-15 no-padding">
+                                <div class="view-pro-img">
+                                    <div class="img" style="background-image: url({{i.image}})"></div>
+                                </div>
+                            </div>
+                            <div class="col col-85 no-padding view-pro">
+                                <h2><b>{{i.event_title}}</b></h2>
+                                <p>{{i.event_datetime}}</p>
+                                <p class="text-size-12 text-color-dark text-bold">{{i.full_location}}</p>
+                            </div>
+                        </div>
+
+                        <ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareEvents(i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareEvents(i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-balanced" ng-click="whatsappShareEvents(i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-positive" ng-click="sendSMSEvents(i.id)"> <i class="icon ion-ios-email"></i> </ion-option-button>    
+                        <ion-option-button class="drag-button button-outline button-share" ng-click="moreShocialShareEvents(i.id, i.event_title, i.full_location, i.image, null)"> <i class="icon ion-share"></i> </ion-option-button>
+                    </ion-item>
+                </ion-list> 
+            </div>
+            
+            <div class="list list-border-top" ng-if="county != 'All' || town_id != 'All'">
+                <ion-list>
+                    <ion-item class="connection-list" ng-repeat="i in search_events| filter:sname track by $index">
+                        <div class="row no-padding" ui-sref="app.view_club_event({id:i.id})">
+                            <div class="col col-15 no-padding">
+                                <div class="view-pro-img">
+                                    <div class="img" style="background-image: url({{i.image}})"></div>
+                                </div>
+                            </div>
+                            <div class="col col-85 no-padding view-pro">
+                                <h2><b>{{i.event_title}}</b></h2>
+                                <p>{{i.event_datetime}}</p>
+                                <p class="text-size-12 text-color-dark text-bold">{{i.full_location}}</p>
+                            </div>
+                        </div>
+
+                        <ion-option-button class="drag-button button-outline button-facebook" ng-click="facebookShareEvents(i.id)"> <i class="icon ion-social-facebook"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-outline button-twitter" ng-click="twitterShareEvents(i.id)"> <i class="icon ion-social-twitter"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-balanced" ng-click="whatsappShareEvents(i.id)"> <i class="icon ion-social-whatsapp"></i> </ion-option-button>
+                        <ion-option-button class="drag-button button-positive" ng-click="sendSMSEvents(i.id)"> <i class="icon ion-ios-email"></i> </ion-option-button>    
+                        <ion-option-button class="drag-button button-outline button-share" ng-click="moreShocialShareEvents(i.id, i.event_title, i.full_location, i.image, null)"> <i class="icon ion-share"></i> </ion-option-button>
+                    </ion-item>
+                </ion-list> 
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="text-center text-blue" ng-if="county == 'All' && town_id == 'All' && all_events.length == 0">
+                        <p>No Events Available</p>
+                        <p> <i class="icon ion-coffee text-size-30"></i> </p> 
+                    </div>
+
+                    <div class="text-center text-blue" ng-if="filterEvents == 'true' && search_events.length == 0">
+                        <p>No Events Found for your Search Criteria</p>
+                        <p> <i class="icon ion-coffee text-size-30"></i> </p> 
+                    </div>
+                </div>
+            </div>
+            
+            <ion-infinite-scroll ng-if="!eventsMore" spinner="ripple" on-infinite="getAllEventsMore(county, town_id)" distance="10%"></ion-infinite-scroll>
+
+        </div>
+
+	</ion-content>
+	
+	<div class="button-fab calm-bg box-shadow" ng-click="openFilterAllEvents()" ng-if="var5 == 3"> 
+		<i class="icon ion-search"></i>
+	</div> 
+    <div class="button-fab calm-bg box-shadow" ng-click="openModalCreateNewEvent({{clubDetails}})" ng-if="(var5 == 1 || var5 == 2) && have_group == true"> 
+        <i class="icon ion-plus"></i>
+    </div>
+</ion-view>

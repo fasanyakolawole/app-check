@@ -1,0 +1,39 @@
+<ion-modal-view cache-modal-view="false">
+        <ion-header-bar class="bar-calm">
+            <button class="button button-clear" ng-click="closeModalAttendingMembers()">
+                <i class="icon ion-ios-arrow-left"></i> Back
+            </button>
+            <div class="h1 title">{{modalTitle}}</div>
+            
+        </ion-header-bar>
+        <ion-content cache-view="false">
+         
+            <ion-list class="" ng-if="have_users">
+				<ion-item class="connection-list" ng-repeat="z in attendance_users">
+					<div class="row no-padding">
+						<div class="col col-15 no-padding">
+							<div class="view-pro-img">
+							<img src="{{z.user_image}}" ng-click="openFriendsProfile({{z.id}})">
+							</div>
+						</div> 
+						<div class="col col-50 no-padding view-pro">
+							<h2><a ng-click="openFriendsProfile({{z.id}})">{{z.member_name}}</a></h2>
+							<p ng-click="openFriendsProfile({{z.id}})">{{z.member_company}}</p>
+							<small class="text-size-12 text-color-dark text-bold">{{z.address}}</small>
+						</div>
+					</div>
+					<!-- <ion-option-button class="drag-button button-outline button-twitter" ng-click="openModalMakeMeetings(z.id, z.member_name)"> <i class="icon ion-clock"></i> </ion-option-button> -->
+				</ion-item>
+			</ion-list>
+
+			<div class="row">
+                <div class="col">
+                    <div class="text-center text-red" ng-if="have_users == false">
+                        <p>There is No {{modalTitle}}</p>
+                        <p> <i class="icon ion-person-stalker text-size-30"></i> </p> 
+                    </div>
+                </div>
+            </div>
+
+        </ion-content>
+</ion-modal-view>

@@ -1,0 +1,74 @@
+<ion-view view-title="Enquiry"  >
+	<ion-nav-buttons side="secondary">
+		<button class="button button-icon ion-grid" ng-click="toggleMenu()"></button>
+	</ion-nav-buttons>
+	<ion-content class="has-tabs-top myOrderEnquiry">
+		<ion-refresher  spinner="ripple" on-refresh="viewMyOrderEnquiry()"></ion-refresher>
+		<div class="padding">
+			<h3 class="text-center">{{productDetails.product_name}}</h3>
+		</div>
+		<ion-slide-box  on-slide-changed="slideHasChanged($index)">
+			<ion-slide  ng-repeat="i in productDetails.topic_images">
+				<div class="img-view-ad">
+					<img ng-src="{{i.image}}">
+				</div>
+			</ion-slide>
+		</ion-slide-box>
+		<div class="item">
+			<p>Customer Name : {{productDetails.customer_name}} </p>
+			<p>Price: {{productDetails.basic_price}}</p>
+			<p>Telephone No : {{productDetails.customer_tel}} </p>
+			<p>Note: {{productDetails.question_asked}}</p>
+		</div>
+		<div ng-if="order_chat_list_count > 0">
+			<div ng-repeat="i in order_chat_list">
+				<div ng-if="i.chat_status == 'other'" class="row" >
+					<div class="col col-15">
+						<div class="chat-profile-pic">
+							<img ng-src="{{i.user_image}}" ui-sref="app.friends_profile">
+						</div>
+					</div> 
+					<div class="col col-85">
+						<div class="chat-bubble left">
+							<div class="message-detail">
+								<span><b>{{i.contact_name}}</b></span>,
+								<span class="text-size-12">{{i.send_time}}</span>
+							</div>
+							<div class="message">
+								{{i.message_body}}
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div ng-if="i.chat_status == 'me'" class="row">
+					<div class="col col-85">
+						<div class="chat-bubble right">
+							<div class="message-detail">
+								<span><b>Me</b></span>
+								<span class="text-size-12">{{i.send_time}}</span>
+							</div>
+							<div class="message">
+								{{i.message_body}}
+							</div>
+						</div>
+					</div>
+					<div class="col col-15">
+						<div class="chat-profile-pic">
+							<img ng-src="{{i.user_image}}">
+						</div>
+					</div> 
+				</div>
+			</div>
+		</div>
+		
+		<div class="list list-inset">
+			<label class="item item-input">
+				<textarea class="new-post" placeholder="Your Questions.." ng-model="enquiryDetails.question" name="question"></textarea>
+			</label>
+		</div>
+		<div class="mt-10 padding-rl-10">
+			<button class="button button-calm button-small pull-right" ng-click="askOrderQuestions(enquiryDetails); enquiryDetails.question=''">Ask Question</button>
+		</div>
+	</ion-content>
+</ion-view>

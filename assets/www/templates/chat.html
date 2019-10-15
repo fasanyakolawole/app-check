@@ -1,0 +1,83 @@
+<ion-view view-title="{{chatname}}">
+	<style>
+		ion-tabs {
+			display: none;
+		}
+	</style>
+	<ion-content class=" message-chats" delegate-handle="userMessageScroll">
+		<ion-refresher on-refresh="getFriendChat(subject_id,friend_id,chstat,chread,sen)" pulling-icon="ion-chevron-up" spinner="ripple"></ion-refresher>
+		<div class="text-center mt-10">
+			<button class="button button-small button-assertive" ng-if="more" ng-click="getFriendChatLoadmore(subject_id,friend_id,chstat,chread,sen)">
+				see older messages </button>
+		</div>
+		<div ng-repeat="message in chat_history  | unique:'id' | orderBy:'date_':false track by $index">
+			<div ng-if="message.sent_by == 0">
+				<div class="row">
+					<div class="col col-15">
+						<div class="chat-profile-pic">
+							<img ng-src="{{message.img_url}}" ui-sref="app.friends_profile({friendid:friend_id})">
+						</div>
+					</div>
+					<div class="col col-85">
+						<div class="chat-bubble left">
+							<div class="message-detail">
+								<span>
+									<b>{{message.contact_name}}</b>
+								</span>,
+								<span class="text-size-12">{{message.send_time}}</span>
+							</div>
+							<div class="message">
+								<div class="message" ng-bind-html="message.message_body">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div ng-if="message.sent_by == 1">
+				<div class="row">
+					<div class="col col-85">
+						<div class="chat-bubble right">
+							<div class="message-detail">
+								<span>
+									<b>Me</b>
+								</span>
+								<span class="text-size-12">{{message.send_time}} </span>
+							</div>
+							<div class="message">
+								<div class="message" ng-bind-html="message.message_body">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col col-15">
+						<div class="chat-profile-pic">
+							<img ng-src="{{message.img_url}}">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div style="padding: 30px;"></div>
+	</ion-content>
+	<div ng-if="msg_is_friend == 'Yes'">
+		<form name="sendMessageForm" ng-submit="sendMessage(msg_body, friend_id, subject_id, chstat, this)">
+			<ion-footer-bar class="bar-stable item-input-inset message-footer" keyboard-attach>
+				<label class="item-input-wrapper">
+					<textarea ng-model="msg_body" id='msg_body' value="" placeholder="{{tmpDisplay}}" required minlength="1" maxlength="1500" class="width-100"
+					    msd-elastic required></textarea>
+				</label>
+				<div class="footer-btn-wrap">
+					<button class="button button-icon icon ion-android-send footer-btn" type="submit" ng-disabled="sendMessageForm.$invalid">
+					</button>
+				</div>
+			</ion-footer-bar>
+		</form>
+	</div>
+	<div ng-if="msg_is_friend == 'No'">
+		<ion-footer-bar class="bar-stable item-input-inset message-footer" keyboard-attach>
+			<p class="chat-block">You can't send messages to this person because you're no longer a friend for him.<p>
+		</ion-footer-bar>
+	</div>
+</ion-view>

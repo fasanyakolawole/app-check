@@ -1,0 +1,51 @@
+<ion-view view-title="Create an Account">
+	<ion-content class="signup padding">
+		<form ng-submit="doRegister(frm)" novalidate="" name="frm">
+			<div class="list">
+				<div class="item-md-label" ng-show="message">
+					<div class="label-danger">{{message}}</div>
+				</div>
+				<label class="item item-input item-floating-label">
+					<input type="text" autocomplete="off" class="form-control" placeholder="First Name" ng-model='u.first_name'>
+				</label>
+				<label class="item item-input item-floating-label">
+					<input type="text" autocomplete="off" class="form-control" placeholder="Last Name" ng-model='u.last_name'>
+				</label>
+				<label class="item item-input item-floating-label">
+					<input type="text" class="form-control" placeholder="Username" id="username" ng-pattern="/^[a-zA-Z0-9]*$/" required ng-model='u.username'>      
+					<label for="username" class="control-label text-danger" ng-show="u.username.length<5 && u.username!=''">
+						<i class="icon ion-alert"></i>
+						Username must be >= 5 characters
+					</label>
+					<label for="username" class="control-label text-danger" ng-show="frm.username.$invalid && u.username!=''">
+						<i class="icon ion-alert"></i>
+						Username must be alphanumeric</label>
+				</label>    
+				<label class="item item-input item-floating-label">
+					<input type="email" autocomplete="off" class="form-control" name="email" placeholder="Email" required ng-model='u.email'>        
+					<label for="email" class="control-label text-danger" ng-show="frm.email.$invalid && u.email!=''">
+						<i class="icon ion-alert"></i>
+						Email is not valid</label>
+				</label> 
+				<label class="item item-input item-floating-label">
+					<input type="password" class="form-control" required id="pass" placeholder="Password" ng-model='u.pass'>
+					<label for="pass" class="control-label text-danger" ng-show="u.pass.length<6 && u.pass!='' && u.pass!=null">
+						<i class="icon ion-alert"></i>
+						Password must be >= 6 characters
+					</label>
+				</label>
+				<label class="item item-input item-floating-label">
+					<input type="password" class="form-control" required id="repassword" placeholder="Confirm Password" ng-model='pass2'>
+					<label for="repassword" class="control-label text-danger" ng-show="u.pass!=pass2 && pass2 !='' && pass2!=null">
+						<i class="icon ion-alert"></i>
+						Password is not match
+					</label>
+				</label>           
+			</div>
+			<div class="padding">
+				<button class="button button-full button-energized round ink" ng-disabled="frm.$invalid || u.username.length<5 || u.pass.length<6 || u.pass!=pass2">Create an Account</button>
+			</div>
+			<p align="center" class="stable">By creating an account you agree to our <a href="">User Agreement</a> and <a href="">Privacy Policy</a>.</p>
+		</form>  
+	</ion-content>
+</ion-view>
